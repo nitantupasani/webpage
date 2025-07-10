@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+// import './index.css';
 import { motion, useAnimation, useInView } from 'framer-motion';
 import { Linkedin, Mail, GitBranch, GraduationCap, Briefcase, Smartphone, Gamepad2, Mic2, ArrowRight } from 'lucide-react';
 
