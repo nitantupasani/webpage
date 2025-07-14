@@ -17,8 +17,8 @@ const portfolioData = {
   summary: "Aspiring to make a positive contribution to society and the environment through scientific openness, inclusivity, and lifelong learning.",
   contact: {
     email: "n.a.upasani@tue.nl",
-    linkedin: "https://www.linkedin.com/in/nitant-upasani-1a597614a",
-    googleScholar: "https://scholar.google.com/citations?user=9_y3-7sAAAAJ"
+    linkedin: "https://www.linkedin.com/in/nitant-upasani-bb1a76148/",
+    googleScholar: "https://scholar.google.com/citations?user=2uA0rkUAAAAJ&hl=en"
   },
   about: {
     philosophy: "My philosophy involves scientific openness, inclusivity, and lifelong learning. As a mathematician, I enjoy modeling and solving both abstract and real-world problems.",
@@ -41,27 +41,27 @@ const portfolioData = {
   ],
   apps: [
     { icon: Smartphone, title: "Comfort App", description: "Developed for PhD research to collect real-time occupant comfort feedback via daily push notifications. Published on both major app stores.", tags: ["Mobile App"], link: "https://play.google.com/store/apps/details?id=com.comfort.comfortfeedbackapp", color: "blue" },
-    { icon: Gamepad2, title: "GPLAN Game", description: "Co-developed an educational game where users generate valid floorplans by interpreting room adjacency graphs, guided by Prof. Shekhawat.", tags: ["Game Development"], link: "#", color: "green" },
-    { icon: Mic2, title: "SHE Visualizer", description: "A voice-to-image web app using OpenAI APIs to transcribe voice, generate AI visuals, and email responses instantly to users at SHE 2024.", tags: ["WordPress", "OpenAI API"], link: "#", color: "purple" }
+    { icon: Gamepad2, title: "GPLAN Game", description: "Co-developed an educational game where users generate valid floorplans by interpreting room adjacency graphs, guided by Prof. Shekhawat.", tags: ["Game Development"], link: "https://apps.apple.com/nl/app/gplan-game/id6727013926?l=en-GB", color: "green" },
+    { icon: Mic2, title: "SHE Visualizer", description: "A voice-to-image web app using OpenAI APIs to transcribe voice, generate AI visuals, and email responses instantly to users at SHE 2024.", tags: ["WordPress", "OpenAI API"], link: "https://www.she2024.com/she-designer-page/", color: "purple" }
   ],
   teaching: {
     workshops: ["Graph-Theoretic algorithms for Building Architectural Floorplans (CAADRIA 2020).", "MATLAB for optimization, neural networks, and structural dynamics (BITS Pilani, 2019)."],
     supervision: ["Master Project: Interface design for all occupants of TU/e (2024).", "Tutor and Guest Lecturer: Smart Building Methodology and Technology, TU/e (2022-24)."]
   },
   publications: [
-    { text: "Upasani, N., Guerra-Santin, O., & Mohammadi, M. (2024). Developing building-specific, occupant-centric thermal comfort models: A methodological approach.", journal: "Journal of Building Engineering, 95.", link: "https://doi.org/10.1016/j.jobe.2024.109705" },
-    { text: "Upasani, N., Shekhawat, K., & Sachdeva, G. (2020). Automated Generation of Dimensioned Rectangular Floorplans.", journal: "Automation in Construction, 113.", link: "https://doi.org/10.1016/j.autcon.2020.103134" },
+    { text: "Upasani, N., Guerra-Santin, O., & Mohammadi, M. (2024). Developing building-specific, occupant-centric thermal comfort models: A methodological approach.", journal: "Journal of Building Engineering, 95.", link: "https://www.sciencedirect.com/science/article/pii/S2352710224018497" },
+    { text: "Upasani, N., Shekhawat, K., & Sachdeva, G. (2020). Automated Generation of Dimensioned Rectangular Floorplans.", journal: "Automation in Construction, 113.", link: "https://doi.org/10.1016/j.autcon.2020.103149" },
     { text: "Upasani, N., Guerra-Santin, M., Mohammadi, M., Seraj, M., & Joostens, F. (2024). Understanding thermal comfort using self-reporting and interpretable machine learning.", journal: "Energy Efficiency (revision submitted).", link: "#" },
     { text: "Upasani, N., Guerra-Santin, O., & Mohammadi, M. (2025). A self-determination theory approach to evaluating indoor environment satisfaction through building interfaces.", journal: "In preparation.", link: "#" },
     { text: "Upasani, N., Guerra-Santin, O., & Mohammadi, M. (2025). Towards a standardized digital platform for smart buildings: Ensuring a two-way communication.", journal: "In preparation.", link: "#" },
-    { text: "Shekhawat, K., Upasani, N., Bisht, S., & Jain, R. (2021). A tool for computer-generated dimensioned floorplans based on given adjacencies.", journal: "Automation in Construction, 127.", link: "https://doi.org/10.1016/j.autcon.2021.103710" },
-    { text: "Bisht, S., Shekhawat, K., Upasani, N., Jain, R., Tiwaskar, R., & Hebbar, C. (2022). Transforming an Adjacency Graph into Dimensioned Floorplan Layouts.", journal: "Computer Graphics Forum, 41(6).", link: "https://doi.org/10.1111/cgf.14555" },
-    { text: "Nagpal, G., Chanda, U., & Upasani, N. (2022). Inventory replenishment policies for two successive generations price-sensitive technology products.", journal: "Journal of Industrial and Management Optimization, 18(3).", link: "https://doi.org/10.3934/jimo.2021031" },
-    { text: "Rawat, S., Narula, R., Upasani, N., & Muthukumar, G. (2019). A relook on dosage of basalt chopped fibres and its influence on characteristics of concrete.", journal: "Advances in Structural Engineering and Rehabilitation.", link: "https://doi.org/10.1007/978-981-13-7615-3_21" },
-    { text: "Upasani, N., Bansal, M., Satapathy, A., Rawat, S., & Muthukumar, G. (2019). Design and Performance Criteria for Fire-Resistant Design of Structures--An Overview.", journal: "Advances in Structural Technologies.", link: "https://doi.org/10.1007/978-981-15-5235-9_22" },
-    { text: "Rawat, S., Narula, R., Kaushik, P., et al. (2024). Seismic and Fire Behaviour of FRP Strengthened Reinforced High Strength Concrete Structures-An Overview.", journal: "RC Structures Strengthened with FRP for Earthquake Resistance.", link: "https://doi.org/10.1007/978-981-97-1945-8_13" },
+    { text: "Shekhawat, K., Upasani, N., Bisht, S., & Jain, R. (2021). A tool for computer-generated dimensioned floorplans based on given adjacencies.", journal: "Automation in Construction, 127.", link: "https://doi.org/10.1016/j.autcon.2021.103718" },
+    { text: "Bisht, S., Shekhawat, K., Upasani, N., Jain, R., Tiwaskar, R., & Hebbar, C. (2022). Transforming an Adjacency Graph into Dimensioned Floorplan Layouts.", journal: "Computer Graphics Forum, 41(6).", link: "https://doi.org/10.1111/cgf.14451" },
+    { text: "Nagpal, G., Chanda, U., & Upasani, N. (2022). Inventory replenishment policies for two successive generations price-sensitive technology products.", journal: "Journal of Industrial and Management Optimization, 18(3).", link: "https://doi.org/10.3934/jimo.2021036" },
+    { text: "Rawat, S., Narula, R., Upasani, N., & Muthukumar, G. (2019). A relook on dosage of basalt chopped fibres and its influence on characteristics of concrete.", journal: "Advances in Structural Engineering and Rehabilitation.", link: "https://doi.org/10.1007/978-981-13-7615-3_22" },
+    { text: "Upasani, N., Bansal, M., Satapathy, A., Rawat, S., & Muthukumar, G. (2019). Design and Performance Criteria for Fire-Resistant Design of Structures--An Overview.", journal: "Advances in Structural Technologies.", link: "https://doi.org/10.1007/978-981-15-5235-9_21" },
+    { text: "Rawat, S., Narula, R., Kaushik, P., et al. (2024). Seismic and Fire Behaviour of FRP Strengthened Reinforced High Strength Concrete Structures-An Overview.", journal: "RC Structures Strengthened with FRP for Earthquake Resistance.", link: "https://doi.org/10.1007/978-981-97-0102-5_11" },
     { text: "Rai, A., Upasani, N., Rawat, S., & Muthukumar, G. (2018). Methodology for numerical simulation of the behaviour of deep beams.", journal: "11th Structural Engineering Convention (SEC-2018).", link: "#" },
-    { text: "Upasani, N., & Gupta, R. (2019). Optimization of rainwater harvesting network in rural scenario using gis and ga.", journal: "5th International Conference on Soft Computing and Optimization.", link: "https://www.academia.edu/40409272/Optimization_of_rainwater_harvesting_network_in_rural_scenario_using_gis_and_ga" },
+    { text: "Upasani, N., & Gupta, R. (2019). Optimization of rainwater harvesting network in rural scenario using gis and ga.", journal: "5th International Conference on Soft Computing and Optimization.", link: "#" },
     { text: "Guerra-Santin, O., Lange, V., Upasani, N., Corsius, M., & Jeurens, J. (2025). User-centric interfaces for smart and healthy buildings: Exploring a design methodology.", journal: "Smart Healthy Environments (SHE) World Conference.", link: "#" }
   ]
 };
