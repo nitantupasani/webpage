@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, createContext, useContext } from 'react';
 import { motion, useAnimation, useInView, AnimatePresence, useMotionValue, useTransform, useSpring } from 'framer-motion';
-import { Linkedin, Mail, GitBranch, GraduationCap, Briefcase, Smartphone, Gamepad2, Mic2, ArrowRight } from 'lucide-react';
+import { Linkedin, Mail, GitBranch, GraduationCap, Briefcase, Smartphone, Gamepad2, Mic2, ArrowRight, Shield, Wrench, ChevronLeft, ChevronRight } from 'lucide-react';
 
 // --- Theme Context ---
 const ThemeContext = createContext();
@@ -264,7 +264,8 @@ const portfolioData = {
   apps: [
     { icon: Smartphone, title: "Comfort App", description: "Developed for PhD research to collect real-time occupant comfort feedback via daily push notifications. Published on both major app stores.", tags: ["Mobile App"], link: "https://play.google.com/store/apps/details?id=com.comfort.comfortfeedbackapp", color: "blue" },
     { icon: Gamepad2, title: "GPLAN Game", description: "Co-developed an educational game where users generate valid floorplans by interpreting room adjacency graphs, guided by Prof. Shekhawat.", tags: ["Game Development"], link: "https://apps.apple.com/nl/app/gplan-game/id6727013926?l=en-GB", color: "green" },
-    { icon: Mic2, title: "SHE Visualizer", description: "A voice-to-image web app using OpenAI APIs to transcribe voice, generate AI visuals, and email responses instantly to users at SHE 2024.", tags: ["WordPress", "OpenAI API"], link: "https://www.she2024.com/she-designer-page/", color: "purple" }
+    { icon: Mic2, title: "SHE Visualizer", description: "A voice-to-image web app using OpenAI APIs to transcribe voice, generate AI visuals, and email responses instantly to users at SHE 2024.", tags: ["WordPress", "OpenAI API"], link: "https://www.she2024.com/she-designer-page/", color: "purple" },
+    { icon: Shield, title: "P3Venti", description: "A decision-support tool for long-term care centers to manage pandemic risks like ventilation, balancing infection risk with resident health.", tags: ["Web App", "Decision Support"], link: "https://p3venti.netlify.app/", color: "red", status: "In Progress" }
   ],
   teaching: {
     workshops: ["Graph-Theoretic algorithms for Building Architectural Floorplans (CAADRIA 2020).", "MATLAB for optimization, neural networks, and structural dynamics (BITS Pilani, 2019)."],
@@ -555,48 +556,133 @@ const Projects = ({ setActiveFilter }) => {
   );
 };
 
-const Apps = () => (
-  <Section id="apps" className="bg-white dark:bg-slate-800">
-    <div className="container mx-auto px-6">
-      <SectionTitle>Applications Developed</SectionTitle>
-      <div className="grid md:grid-cols-3 gap-8">
-        {portfolioData.apps.map((app, index) => {
-          const Icon = app.icon;
-          const isClickable = app.link && app.link !== "#";
-          return (
-            <TiltCard key={index}>
-              <div className="bg-gray-50 dark:bg-slate-900 rounded-lg p-6 border border-gray-200 dark:border-slate-700 flex flex-col h-full">
-                <div className="flex items-center mb-4">
-                  <div className={`p-3 rounded-full bg-${app.color}-100 dark:bg-${app.color}-900/30 mr-4 text-${app.color}-600 dark:text-${app.color}-400`}>
-                    <Icon size={24} />
-                  </div>
-                  <h3 className="text-xl font-bold text-slate-900 dark:text-white">{app.title}</h3>
-                </div>
-                <p className="text-slate-600 dark:text-slate-300 mb-4 flex-grow">{app.description}</p>
-                <div className="flex justify-between items-center mt-4">
-                  <div className="flex flex-wrap gap-2">
-                    {app.tags.map(tag => (
-                      <span key={tag} className="bg-cyan-100/60 text-cyan-800 dark:bg-cyan-900/30 dark:text-cyan-300 text-xs font-mono px-3 py-1 rounded-full">{tag}</span>
-                    ))}
-                  </div>
-                  {isClickable ? (
-                    <a href={app.link} target="_blank" rel="noopener noreferrer" className={`text-${app.color}-600 dark:text-${app.color}-400 hover:text-${app.color}-800 dark:hover:text-${app.color}-300 font-semibold text-sm flex items-center`}>
-                      Details <ArrowRight size={16} className="ml-1" />
-                    </a>
-                  ) : (
-                    <span className={`text-slate-400 dark:text-slate-500 font-semibold text-sm flex items-center cursor-default`}>
-                      Details <ArrowRight size={16} className="ml-1" />
-                    </span>
+const Apps = () => {
+  const scrollRef = useRef(null);
+  const [showLeftArrow, setShowLeftArrow] = useState(false);
+  const [showRightArrow, setShowRightArrow] = useState(true);
+
+  const handleScroll = () => {
+    if (scrollRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
+      setShowLeftArrow(scrollLeft > 5);
+      setShowRightArrow(scrollLeft < scrollWidth - clientWidth - 5);
+    }
+  };
+
+  const scroll = (direction) => {
+    if (scrollRef.current) {
+      const scrollAmount = direction === 'left' ? -350 : 350;
+      scrollRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    }
+  };
+
+  useEffect(() => {
+    const currentRef = scrollRef.current;
+    if (currentRef) {
+      handleScroll(); // Initial check
+      currentRef.addEventListener('scroll', handleScroll);
+      window.addEventListener('resize', handleScroll);
+    }
+    return () => {
+      if (currentRef) {
+        currentRef.removeEventListener('scroll', handleScroll);
+        window.removeEventListener('resize', handleScroll);
+      }
+    };
+  }, []);
+
+  return (
+    <Section id="apps" className="bg-white dark:bg-slate-800">
+      <div className="container mx-auto px-6">
+        <SectionTitle>Applications Developed</SectionTitle>
+        <div className="relative group">
+          <div ref={scrollRef} className="flex space-x-8 pb-4 -mx-6 px-6 overflow-x-auto" style={{ scrollbarWidth: 'none', 'msOverflowStyle': 'none' }}>
+            {portfolioData.apps.map((app, index) => {
+              const Icon = app.icon;
+              const isClickable = app.link && app.link !== "#";
+              
+              const cardContent = (
+                <div className="relative bg-gray-50 dark:bg-slate-900 rounded-lg p-6 border border-gray-200 dark:border-slate-700 flex flex-col h-full overflow-hidden">
+                  {app.status === "In Progress" && (
+                    <div className="absolute top-2 right-2 z-10">
+                      <div className="flex items-center bg-amber-100 dark:bg-amber-900/50 text-amber-800 dark:text-amber-300 text-xs font-bold px-3 py-1 rounded-full shadow-md">
+                        <Wrench size={12} className="mr-1.5" />
+                        {app.status}
+                      </div>
+                    </div>
                   )}
+                  <div className="flex items-center mb-4">
+                    <div className={`p-3 rounded-full bg-${app.color}-100 dark:bg-${app.color}-900/30 mr-4 text-${app.color}-600 dark:text-${app.color}-400`}>
+                      <Icon size={24} />
+                    </div>
+                    <h3 className="text-xl font-bold text-slate-900 dark:text-white">{app.title}</h3>
+                  </div>
+                  <p className="text-slate-600 dark:text-slate-300 mb-4 flex-grow">{app.description}</p>
+                  <div className="flex justify-between items-center mt-4">
+                    <div className="flex flex-wrap gap-2">
+                      {app.tags.map(tag => (
+                        <span key={tag} className="bg-cyan-100/60 text-cyan-800 dark:bg-cyan-900/30 dark:text-cyan-300 text-xs font-mono px-3 py-1 rounded-full">{tag}</span>
+                      ))}
+                    </div>
+                    <ArrowRight className={`text-slate-400 dark:text-slate-500 transition-opacity ${isClickable ? 'opacity-100' : 'opacity-0'}`} size={20} />
+                  </div>
                 </div>
-              </div>
-            </TiltCard>
-          );
-        })}
+              );
+
+              if (isClickable) {
+                return (
+                  <a key={index} href={app.link} target="_blank" rel="noopener noreferrer" className="block h-full min-w-[350px] md:min-w-0 md:w-1/3 flex-shrink-0">
+                    <TiltCard>
+                      {cardContent}
+                    </TiltCard>
+                  </a>
+                );
+              }
+
+              return (
+                <div key={index} className="h-full min-w-[350px] md:min-w-0 md:w-1/3 flex-shrink-0">
+                  <TiltCard>
+                    {cardContent}
+                  </TiltCard>
+                </div>
+              );
+            })}
+          </div>
+          <AnimatePresence>
+            {showLeftArrow && (
+              <motion.button
+                initial={{ opacity: 0, scale: 0.5 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.5 }}
+                whileHover={{ scale: 1.1, backgroundColor: 'rgba(255, 255, 255, 0.8)' }}
+                whileTap={{ scale: 0.9 }}
+                onClick={() => scroll('left')}
+                className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-20 bg-white/70 dark:bg-slate-900/70 backdrop-blur-sm rounded-full p-2 shadow-lg"
+              >
+                <ChevronLeft size={40} className="text-slate-700 dark:text-slate-200" />
+              </motion.button>
+            )}
+          </AnimatePresence>
+          <AnimatePresence>
+            {showRightArrow && (
+              <motion.button
+                initial={{ opacity: 0, scale: 0.5 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.5 }}
+                whileHover={{ scale: 1.1, backgroundColor: 'rgba(255, 255, 255, 0.8)' }}
+                whileTap={{ scale: 0.9 }}
+                onClick={() => scroll('right')}
+                className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-20 bg-white/70 dark:bg-slate-900/70 backdrop-blur-sm rounded-full p-2 shadow-lg"
+              >
+                <ChevronRight size={40} className="text-slate-700 dark:text-slate-200" />
+              </motion.button>
+            )}
+          </AnimatePresence>
+        </div>
       </div>
-    </div>
-  </Section>
-);
+    </Section>
+  );
+};
 
 const Teaching = () => (
   <Section id="teaching" className="bg-gray-50 dark:bg-slate-900">
