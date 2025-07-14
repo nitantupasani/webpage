@@ -111,7 +111,7 @@ const Header = () => {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-slate-900/60 backdrop-blur-lg border-b border-slate-700/50">
       <div className="container mx-auto px-6 py-4 flex justify-between items-center">
-        <a href="#" className="text-xl font-bold text-white hover:text-cyan-400 transition-colors">
+        <a href="#hero" className="text-xl font-bold text-white hover:text-cyan-400 transition-colors">
           {portfolioData.name}
         </a>
         <nav className="hidden md:flex items-center space-x-8">
@@ -287,6 +287,7 @@ const Apps = () => (
       <div className="grid md:grid-cols-3 gap-8">
         {portfolioData.apps.map((app, index) => {
           const Icon = app.icon;
+          const isClickable = app.link && app.link !== "#";
           return (
             <motion.div
               key={index}
@@ -310,9 +311,15 @@ const Apps = () => (
                     <span key={tag} className="bg-slate-700 text-cyan-300 text-xs font-mono px-3 py-1 rounded-full">{tag}</span>
                   ))}
                 </div>
-                <a href={app.link} target="_blank" rel="noopener noreferrer" className={`text-${app.color}-400 hover:text-${app.color}-300 font-semibold text-sm flex items-center`}>
-                  Details <ArrowRight size={16} className="ml-1" />
-                </a>
+                {isClickable ? (
+                  <a href={app.link} target="_blank" rel="noopener noreferrer" className={`text-${app.color}-400 hover:text-${app.color}-300 font-semibold text-sm flex items-center`}>
+                    Details <ArrowRight size={16} className="ml-1" />
+                  </a>
+                ) : (
+                  <span className={`text-slate-500 font-semibold text-sm flex items-center cursor-default`}>
+                    Details <ArrowRight size={16} className="ml-1" />
+                  </span>
+                )}
               </div>
             </motion.div>
           );
