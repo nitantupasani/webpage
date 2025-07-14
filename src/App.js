@@ -16,6 +16,8 @@ const portfolioData = {
   name: "Nitant Upasani",
   title: "Researcher, Mathematician, and Innovator",
   summary: "Aspiring to make a positive contribution to society and the environment through scientific openness, inclusivity, and lifelong learning.",
+  // IMPORTANT: Replace this with a direct link to your photo
+  pictureUrl: "/picture.jpg",
   contact: {
     email: "n.a.upasani@tue.nl",
     linkedin: "https://www.linkedin.com/in/nitant-upasani-bb1a76148/",
@@ -112,7 +114,7 @@ const Header = () => {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-slate-900/60 backdrop-blur-lg border-b border-slate-700/50">
       <div className="container mx-auto px-6 py-4 flex justify-between items-center">
-        <a href="#hero" className="text-xl font-bold text-white hover:text-cyan-400 transition-colors">
+        <a href="/" className="text-xl font-bold text-white hover:text-cyan-400 transition-colors">
           {portfolioData.name}
         </a>
         <nav className="hidden md:flex items-center space-x-8">
@@ -152,35 +154,55 @@ const Header = () => {
 
 const Hero = () => {
   return (
-    <section id="hero" className="min-h-screen flex items-center justify-center text-center relative overflow-hidden">
+    <section id="home" className="min-h-screen flex items-center justify-center relative overflow-hidden">
       <div className="absolute inset-0 bg-slate-900 z-0">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.3),rgba(255,255,255,0))]"></div>
       </div>
       <div className="container mx-auto px-6 z-10">
-        <motion.h1 
-          className="text-4xl md:text-6xl font-extrabold text-white leading-tight"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-        >
-          {portfolioData.name}
-        </motion.h1>
-        <motion.p 
-          className="mt-4 text-lg md:text-2xl text-cyan-400 font-semibold"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.4 }}
-        >
-          {portfolioData.title}
-        </motion.p>
-        <motion.p 
-          className="mt-6 max-w-3xl mx-auto text-base md:text-lg text-slate-300"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.6 }}
-        >
-          {portfolioData.summary}
-        </motion.p>
+        <div className="grid md:grid-cols-2 gap-12 items-center">
+          <div className="text-center md:text-left">
+            <motion.h1 
+              className="text-4xl md:text-6xl font-extrabold text-white leading-tight"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+            >
+              {portfolioData.name}
+            </motion.h1>
+            <motion.p 
+              className="mt-4 text-lg md:text-2xl text-cyan-400 font-semibold"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+            >
+              {portfolioData.title}
+            </motion.p>
+            <motion.p 
+              className="mt-6 max-w-xl text-base md:text-lg text-slate-300"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.6 }}
+            >
+              {portfolioData.summary}
+            </motion.p>
+          </div>
+          <motion.div 
+            className="flex justify-center"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, delay: 0.8, type: 'spring' }}
+          >
+            <div className="relative w-64 h-64 md:w-80 md:h-80">
+              <div className="absolute inset-0 bg-gradient-to-tr from-cyan-500 to-purple-500 rounded-full blur-xl opacity-50 animate-pulse"></div>
+              <img 
+                src={portfolioData.pictureUrl} 
+                alt="Nitant Upasani" 
+                className="relative w-full h-full object-cover rounded-full border-4 border-slate-700 shadow-2xl"
+                onError={(e) => { e.target.onerror = null; e.target.src='https://placehold.co/400/1E293B/FFFFFF?text=Image+Not+Found'; }}
+              />
+            </div>
+          </motion.div>
+        </div>
       </div>
     </section>
   );
