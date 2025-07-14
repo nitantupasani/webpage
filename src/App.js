@@ -1,6 +1,33 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, createContext, useContext } from 'react';
 import { motion, useAnimation, useInView } from 'framer-motion';
-import { Linkedin, Mail, GitBranch, GraduationCap, Briefcase, Smartphone, Gamepad2, Mic2, ArrowRight } from 'lucide-react';
+import { Linkedin, Mail, GitBranch, GraduationCap, Briefcase, Smartphone, Gamepad2, Mic2, ArrowRight, Sun, Moon } from 'lucide-react';
+
+// --- Theme Context ---
+// This sets up the ability to toggle between light and dark themes.
+// Make sure your tailwind.config.js has `darkMode: 'class'`.
+const ThemeContext = createContext();
+
+const ThemeProvider = ({ children }) => {
+  const [theme, setTheme] = useState('dark');
+
+  useEffect(() => {
+    const root = window.document.documentElement;
+    root.classList.remove(theme === 'dark' ? 'light' : 'dark');
+    root.classList.add(theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(theme === 'dark' ? 'light' : 'dark');
+  };
+
+  return (
+    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+      {children}
+    </ThemeContext.Provider>
+  );
+};
+
+const useTheme = () => useContext(ThemeContext);
 
 // --- Google Scholar Icon ---
 const GoogleScholarIcon = (props) => (
@@ -16,8 +43,7 @@ const portfolioData = {
   name: "Nitant Upasani",
   title: "Researcher, Mathematician, and Innovator",
   summary: "Aspiring to make a positive contribution to society and the environment through scientific openness, inclusivity, and lifelong learning.",
-  // IMPORTANT: Replace this with a direct link to your photo
-  pictureUrl: "/picture.png",
+  pictureUrl: "/picture.png", // Using a local image from the /public folder
   contact: {
     email: "n.a.upasani@tue.nl",
     linkedin: "https://www.linkedin.com/in/nitant-upasani-bb1a76148/",
@@ -100,52 +126,68 @@ const Section = ({ children, id, className = '' }) => {
 };
 
 const SectionTitle = ({ children }) => (
-  <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 md:mb-16 text-slate-100">
+  <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 md:mb-16 text-slate-900 dark:text-slate-100">
     {children}
   </h2>
 );
 
 // --- Page Section Components ---
 
+const ThemeToggleButton = () => {
+  const { theme, toggleTheme } = useTheme();
+  return (
+    <button
+      onClick={toggleTheme}
+      className="p-2 rounded-full text-slate-500 dark:text-slate-400 hover:bg-gray-200 dark:hover:bg-slate-700 transition-colors"
+    >
+      {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
+    </button>
+  );
+};
+
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const navLinks = ["About", "Projects", "Apps", "Teaching", "Publications"];
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-slate-900/60 backdrop-blur-lg border-b border-slate-700/50">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-lg border-b border-gray-200 dark:border-slate-800">
       <div className="container mx-auto px-6 py-4 flex justify-between items-center">
-        <a href="/" className="text-xl font-bold text-white hover:text-cyan-400 transition-colors">
+        <a href="/" className="text-xl font-bold text-slate-900 dark:text-white hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors">
           {portfolioData.name}
         </a>
         <nav className="hidden md:flex items-center space-x-8">
           {navLinks.map(link => (
-            <a key={link} href={`#${link.toLowerCase()}`} className="text-slate-300 hover:text-cyan-400 transition-colors">
+            <a key={link} href={`#${link.toLowerCase()}`} className="text-slate-600 dark:text-slate-300 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors">
               {link}
             </a>
           ))}
         </nav>
         <div className="hidden md:flex items-center space-x-4">
-          <a href={portfolioData.contact.linkedin} target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-cyan-400">
+          <a href={portfolioData.contact.linkedin} target="_blank" rel="noopener noreferrer" className="text-slate-500 dark:text-slate-400 hover:text-cyan-600 dark:hover:text-cyan-400">
             <Linkedin size={20} />
           </a>
-          <a href={portfolioData.contact.googleScholar} target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-cyan-400">
+          <a href={portfolioData.contact.googleScholar} target="_blank" rel="noopener noreferrer" className="text-slate-500 dark:text-slate-400 hover:text-cyan-600 dark:hover:text-cyan-400">
             <GoogleScholarIcon className="w-5 h-5" />
           </a>
-          <a href={`mailto:${portfolioData.contact.email}`} className="text-slate-400 hover:text-cyan-400">
+          <a href={`mailto:${portfolioData.contact.email}`} className="text-slate-500 dark:text-slate-400 hover:text-cyan-600 dark:hover:text-cyan-400">
             <Mail size={20} />
           </a>
+          <ThemeToggleButton />
         </div>
-        <button onClick={() => setIsOpen(!isOpen)} className="md:hidden text-white">
+        <button onClick={() => setIsOpen(!isOpen)} className="md:hidden text-slate-900 dark:text-white">
           <GitBranch size={24} />
         </button>
       </div>
       {isOpen && (
-        <div className="md:hidden px-6 pb-4 flex flex-col space-y-4">
+        <div className="md:hidden px-6 pb-4 flex flex-col space-y-4 bg-white/95 dark:bg-slate-900/95">
           {navLinks.map(link => (
-            <a key={link} href={`#${link.toLowerCase()}`} onClick={() => setIsOpen(false)} className="text-slate-300 hover:text-cyan-400 transition-colors block text-center">
+            <a key={link} href={`#${link.toLowerCase()}`} onClick={() => setIsOpen(false)} className="text-slate-600 dark:text-slate-300 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors block text-center">
               {link}
             </a>
           ))}
+           <div className="pt-4 mt-4 border-t border-gray-200 dark:border-slate-800 flex justify-center">
+            <ThemeToggleButton />
+          </div>
         </div>
       )}
     </header>
@@ -155,14 +197,14 @@ const Header = () => {
 const Hero = () => {
   return (
     <section id="home" className="min-h-screen flex items-center justify-center relative overflow-hidden">
-      <div className="absolute inset-0 bg-slate-900 z-0">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.3),rgba(255,255,255,0))]"></div>
+      <div className="absolute inset-0 bg-gray-50 dark:bg-slate-900 z-0">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.15),rgba(255,255,255,0))] dark:bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.3),rgba(255,255,255,0))]"></div>
       </div>
       <div className="container mx-auto px-6 z-10">
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <div className="text-center md:text-left">
             <motion.h1 
-              className="text-4xl md:text-6xl font-extrabold text-white leading-tight"
+              className="text-4xl md:text-6xl font-extrabold text-slate-900 dark:text-white leading-tight"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
@@ -170,7 +212,7 @@ const Hero = () => {
               {portfolioData.name}
             </motion.h1>
             <motion.p 
-              className="mt-4 text-lg md:text-2xl text-cyan-400 font-semibold"
+              className="mt-4 text-lg md:text-2xl text-cyan-600 dark:text-cyan-400 font-semibold"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.4 }}
@@ -178,7 +220,7 @@ const Hero = () => {
               {portfolioData.title}
             </motion.p>
             <motion.p 
-              className="mt-6 max-w-xl text-base md:text-lg text-slate-300"
+              className="mt-6 max-w-xl text-base md:text-lg text-slate-600 dark:text-slate-300"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.6 }}
@@ -193,11 +235,11 @@ const Hero = () => {
             transition={{ duration: 0.8, delay: 0.8, type: 'spring' }}
           >
             <div className="relative w-64 h-64 md:w-80 md:h-80">
-              <div className="absolute inset-0 bg-gradient-to-tr from-cyan-500 to-purple-500 rounded-full blur-xl opacity-50 animate-pulse"></div>
+              <div className="absolute inset-0 bg-gradient-to-tr from-cyan-400 to-purple-400 rounded-full blur-xl opacity-50 dark:from-cyan-500 dark:to-purple-500 dark:opacity-50 animate-pulse"></div>
               <img 
                 src={portfolioData.pictureUrl} 
                 alt="Nitant Upasani" 
-                className="relative w-full h-full object-cover rounded-full border-4 border-slate-700 shadow-2xl"
+                className="relative w-full h-full object-cover rounded-full border-4 border-white dark:border-slate-700 shadow-2xl"
                 onError={(e) => { e.target.onerror = null; e.target.src='https://placehold.co/400/1E293B/FFFFFF?text=Image+Not+Found'; }}
               />
             </div>
@@ -213,18 +255,18 @@ const About = () => {
   const tabs = ['philosophy', 'strengths', 'values'];
 
   return (
-    <Section id="about" className="bg-slate-800/50">
+    <Section id="about" className="bg-white dark:bg-slate-800">
       <div className="container mx-auto px-6">
         <SectionTitle>About Me</SectionTitle>
         <div className="grid md:grid-cols-5 gap-12 items-start">
           <div className="md:col-span-2">
-            <div className="mb-4 border-b border-slate-600">
+            <div className="mb-4 border-b border-gray-200 dark:border-slate-700">
               <ul className="flex flex-wrap -mb-px text-sm font-medium text-center">
                 {tabs.map(tab => (
                   <li key={tab} className="mr-2">
                     <button
                       onClick={() => setActiveTab(tab)}
-                      className={`inline-block p-4 border-b-2 rounded-t-lg capitalize transition-colors ${activeTab === tab ? 'text-cyan-400 border-cyan-400' : 'text-slate-400 border-transparent hover:text-slate-300 hover:border-slate-500'}`}
+                      className={`inline-block p-4 border-b-2 rounded-t-lg capitalize transition-colors ${activeTab === tab ? 'text-cyan-600 border-cyan-600 dark:text-cyan-400 dark:border-cyan-400' : 'text-slate-500 border-transparent hover:text-slate-700 hover:border-gray-300 dark:text-slate-400 dark:hover:text-slate-300 dark:hover:border-slate-600'}`}
                     >
                       {tab}
                     </button>
@@ -232,14 +274,14 @@ const About = () => {
                 ))}
               </ul>
             </div>
-            <div className="p-4 rounded-lg bg-slate-900/70 min-h-[120px]">
-              <p className="text-slate-300">{portfolioData.about[activeTab]}</p>
+            <div className="p-4 rounded-lg bg-gray-50 dark:bg-slate-900 min-h-[120px]">
+              <p className="text-slate-600 dark:text-slate-300">{portfolioData.about[activeTab]}</p>
             </div>
             <div className="mt-8">
-              <h3 className="text-xl font-semibold text-slate-100 mb-4">Technical Proficiency</h3>
+              <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">Technical Proficiency</h3>
               <div className="flex flex-wrap gap-2">
                 {portfolioData.skills.map(skill => (
-                  <span key={skill} className="bg-slate-700 text-cyan-300 text-xs font-mono px-3 py-1 rounded-full">
+                  <span key={skill} className="bg-cyan-100/60 text-cyan-800 dark:bg-cyan-900/30 dark:text-cyan-300 text-xs font-mono px-3 py-1 rounded-full">
                     {skill}
                   </span>
                 ))}
@@ -247,8 +289,8 @@ const About = () => {
             </div>
           </div>
           <div className="md:col-span-3">
-            <h3 className="text-xl font-semibold text-slate-100 mb-6">Education & Experience</h3>
-            <ol className="relative border-l border-slate-700">
+            <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-6">Education & Experience</h3>
+            <ol className="relative border-l border-gray-200 dark:border-slate-700">
               {portfolioData.timeline.map((item, index) => (
                 <motion.li 
                   key={index} 
@@ -258,12 +300,12 @@ const About = () => {
                   viewport={{ once: true, amount: 0.5 }}
                   transition={{ duration: 0.5, delay: index * 0.1 }}
                 >
-                  <span className="absolute flex items-center justify-center w-8 h-8 bg-slate-800 rounded-full -left-4 ring-4 ring-slate-800/50 text-cyan-400">
+                  <span className="absolute flex items-center justify-center w-8 h-8 bg-gray-100 dark:bg-slate-800 rounded-full -left-4 ring-4 ring-white dark:ring-slate-800 text-cyan-600 dark:text-cyan-400">
                     {item.type === 'work' ? <Briefcase size={16} /> : <GraduationCap size={16} />}
                   </span>
-                  <h3 className="flex items-center mb-1 text-lg font-semibold text-slate-100">{item.title}</h3>
-                  <time className="block mb-2 text-sm font-normal leading-none text-slate-400">{item.period} | {item.institution}</time>
-                  {item.description && <p className="mb-4 text-base font-normal text-slate-300">{item.description}</p>}
+                  <h3 className="flex items-center mb-1 text-lg font-semibold text-slate-900 dark:text-white">{item.title}</h3>
+                  <time className="block mb-2 text-sm font-normal leading-none text-slate-400 dark:text-slate-500">{item.period} | {item.institution}</time>
+                  {item.description && <p className="mb-4 text-base font-normal text-slate-600 dark:text-slate-300">{item.description}</p>}
                 </motion.li>
               ))}
             </ol>
@@ -275,25 +317,25 @@ const About = () => {
 };
 
 const Projects = () => (
-  <Section id="projects">
+  <Section id="projects" className="bg-gray-50 dark:bg-slate-900">
     <div className="container mx-auto px-6">
       <SectionTitle>Research Projects</SectionTitle>
       <div className="grid md:grid-cols-2 gap-8">
         {portfolioData.projects.map((project, index) => (
           <motion.div
             key={index}
-            className="bg-slate-800/50 rounded-lg p-6 border border-slate-700 hover:border-cyan-400/50 transition-colors duration-300"
+            className="bg-white dark:bg-slate-800 rounded-lg p-6 border border-gray-200 dark:border-slate-700 hover:border-cyan-300 dark:hover:border-cyan-500 transition-colors duration-300"
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true, amount: 0.5 }}
             transition={{ duration: 0.5, delay: index * 0.1 }}
             whileHover={{ y: -5 }}
           >
-            <h3 className="text-xl font-bold text-slate-100 mb-2">{project.title}</h3>
-            <p className="text-slate-300 mb-4">{project.description}</p>
+            <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">{project.title}</h3>
+            <p className="text-slate-600 dark:text-slate-300 mb-4">{project.description}</p>
             <div className="flex flex-wrap gap-2">
               {project.tags.map(tag => (
-                <span key={tag} className="bg-slate-700 text-cyan-300 text-xs font-mono px-3 py-1 rounded-full">{tag}</span>
+                <span key={tag} className="bg-cyan-100/60 text-cyan-800 dark:bg-cyan-900/30 dark:text-cyan-300 text-xs font-mono px-3 py-1 rounded-full">{tag}</span>
               ))}
             </div>
           </motion.div>
@@ -304,7 +346,7 @@ const Projects = () => (
 );
 
 const Apps = () => (
-  <Section id="apps" className="bg-slate-800/50">
+  <Section id="apps" className="bg-white dark:bg-slate-800">
     <div className="container mx-auto px-6">
       <SectionTitle>Applications Developed</SectionTitle>
       <div className="grid md:grid-cols-3 gap-8">
@@ -314,7 +356,7 @@ const Apps = () => (
           return (
             <motion.div
               key={index}
-              className="bg-slate-900/70 rounded-lg p-6 border border-slate-700 hover:border-cyan-400/50 transition-colors duration-300 flex flex-col"
+              className="bg-gray-50 dark:bg-slate-900 rounded-lg p-6 border border-gray-200 dark:border-slate-700 hover:border-cyan-300 dark:hover:border-cyan-500 transition-colors duration-300 flex flex-col"
               initial={{ opacity: 0, y: 50 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.5 }}
@@ -322,24 +364,24 @@ const Apps = () => (
               whileHover={{ y: -5 }}
             >
               <div className="flex items-center mb-4">
-                <div className={`p-3 rounded-full bg-${app.color}-500/10 mr-4 text-${app.color}-400`}>
+                <div className={`p-3 rounded-full bg-${app.color}-100 dark:bg-${app.color}-900/30 mr-4 text-${app.color}-600 dark:text-${app.color}-400`}>
                   <Icon size={24} />
                 </div>
-                <h3 className="text-xl font-bold text-slate-100">{app.title}</h3>
+                <h3 className="text-xl font-bold text-slate-900 dark:text-white">{app.title}</h3>
               </div>
-              <p className="text-slate-300 mb-4 flex-grow">{app.description}</p>
+              <p className="text-slate-600 dark:text-slate-300 mb-4 flex-grow">{app.description}</p>
               <div className="flex justify-between items-center mt-4">
                 <div className="flex flex-wrap gap-2">
                   {app.tags.map(tag => (
-                    <span key={tag} className="bg-slate-700 text-cyan-300 text-xs font-mono px-3 py-1 rounded-full">{tag}</span>
+                    <span key={tag} className="bg-cyan-100/60 text-cyan-800 dark:bg-cyan-900/30 dark:text-cyan-300 text-xs font-mono px-3 py-1 rounded-full">{tag}</span>
                   ))}
                 </div>
                 {isClickable ? (
-                  <a href={app.link} target="_blank" rel="noopener noreferrer" className={`text-${app.color}-400 hover:text-${app.color}-300 font-semibold text-sm flex items-center`}>
+                  <a href={app.link} target="_blank" rel="noopener noreferrer" className={`text-${app.color}-600 dark:text-${app.color}-400 hover:text-${app.color}-800 dark:hover:text-${app.color}-300 font-semibold text-sm flex items-center`}>
                     Details <ArrowRight size={16} className="ml-1" />
                   </a>
                 ) : (
-                  <span className={`text-slate-500 font-semibold text-sm flex items-center cursor-default`}>
+                  <span className={`text-slate-400 dark:text-slate-500 font-semibold text-sm flex items-center cursor-default`}>
                     Details <ArrowRight size={16} className="ml-1" />
                   </span>
                 )}
@@ -353,31 +395,31 @@ const Apps = () => (
 );
 
 const Teaching = () => (
-  <Section id="teaching">
+  <Section id="teaching" className="bg-gray-50 dark:bg-slate-900">
     <div className="container mx-auto px-6">
       <SectionTitle>Teaching & Mentorship</SectionTitle>
       <div className="max-w-4xl mx-auto grid md:grid-cols-2 gap-8">
         <motion.div 
-          className="bg-slate-800/50 p-6 rounded-lg border border-slate-700"
+          className="bg-white dark:bg-slate-800 p-6 rounded-lg border border-gray-200 dark:border-slate-700"
           initial={{ opacity: 0, x: -50 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true, amount: 0.5 }}
           transition={{ duration: 0.6 }}
         >
-          <h3 className="font-semibold text-lg text-slate-100 mb-3">Workshops Conducted</h3>
-          <ul className="space-y-2 text-slate-300 list-disc list-inside">
+          <h3 className="font-semibold text-lg text-slate-900 dark:text-white mb-3">Workshops Conducted</h3>
+          <ul className="space-y-2 text-slate-600 dark:text-slate-300 list-disc list-inside">
             {portfolioData.teaching.workshops.map((item, i) => <li key={i}>{item}</li>)}
           </ul>
         </motion.div>
         <motion.div 
-          className="bg-slate-800/50 p-6 rounded-lg border border-slate-700"
+          className="bg-white dark:bg-slate-800 p-6 rounded-lg border border-gray-200 dark:border-slate-700"
           initial={{ opacity: 0, x: 50 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true, amount: 0.5 }}
           transition={{ duration: 0.6 }}
         >
-          <h3 className="font-semibold text-lg text-slate-100 mb-3">Student Supervision</h3>
-          <ul className="space-y-2 text-slate-300 list-disc list-inside">
+          <h3 className="font-semibold text-lg text-slate-900 dark:text-white mb-3">Student Supervision</h3>
+          <ul className="space-y-2 text-slate-600 dark:text-slate-300 list-disc list-inside">
             {portfolioData.teaching.supervision.map((item, i) => <li key={i}>{item}</li>)}
           </ul>
         </motion.div>
@@ -387,7 +429,7 @@ const Teaching = () => (
 );
 
 const Publications = () => (
-    <Section id="publications" className="bg-slate-800/50">
+    <Section id="publications" className="bg-white dark:bg-slate-800">
         <div className="container mx-auto px-6">
             <SectionTitle>Publications</SectionTitle>
             <div className="max-w-4xl mx-auto space-y-4">
@@ -400,13 +442,13 @@ const Publications = () => (
                             href={isClickable ? pub.link : undefined}
                             target={isClickable ? "_blank" : undefined}
                             rel={isClickable ? "noopener noreferrer" : undefined}
-                            className={`block p-4 border border-slate-700 rounded-lg bg-slate-900/50 ${isClickable ? 'hover:border-cyan-400/50 hover:bg-slate-800/60' : 'cursor-default'} transition-all duration-300`}
+                            className={`block p-4 border border-gray-200 dark:border-slate-700 rounded-lg bg-gray-50 dark:bg-slate-900 ${isClickable ? 'hover:border-cyan-300 dark:hover:border-cyan-500 hover:bg-gray-100 dark:hover:bg-slate-800' : 'cursor-default'} transition-all duration-300`}
                             initial={{ opacity: 0, y: 20 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true, amount: 0.8 }}
                             transition={{ duration: 0.5, delay: index * 0.05 }}
                         >
-                            <p className="font-medium text-slate-200">{pub.text} <em className="text-slate-400 not-italic">{pub.journal}</em></p>
+                            <p className="font-medium text-slate-800 dark:text-slate-200">{pub.text} <em className="text-slate-500 dark:text-slate-400 not-italic">{pub.journal}</em></p>
                         </MotionComponent>
                     );
                 })}
@@ -416,18 +458,18 @@ const Publications = () => (
 );
 
 const Footer = () => (
-  <footer className="bg-slate-900 border-t border-slate-800">
-    <div className="container mx-auto px-6 py-8 text-center text-slate-400">
-      <p className="text-lg font-semibold text-white">{portfolioData.name}</p>
+  <footer className="bg-gray-100 dark:bg-slate-800 border-t border-gray-200 dark:border-slate-700">
+    <div className="container mx-auto px-6 py-8 text-center text-slate-600 dark:text-slate-400">
+      <p className="text-lg font-semibold text-slate-900 dark:text-white">{portfolioData.name}</p>
       <p className="mt-2">Let's connect and build something great together.</p>
       <div className="mt-6 flex justify-center space-x-6">
-        <a href={`mailto:${portfolioData.contact.email}`} className="hover:text-cyan-400 transition-colors"><Mail size={22} /></a>
-        <a href={portfolioData.contact.linkedin} target="_blank" rel="noopener noreferrer" className="hover:text-cyan-400 transition-colors"><Linkedin size={22} /></a>
-        <a href={portfolioData.contact.googleScholar} target="_blank" rel="noopener noreferrer" className="hover:text-cyan-400 transition-colors">
+        <a href={`mailto:${portfolioData.contact.email}`} className="hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors"><Mail size={22} /></a>
+        <a href={portfolioData.contact.linkedin} target="_blank" rel="noopener noreferrer" className="hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors"><Linkedin size={22} /></a>
+        <a href={portfolioData.contact.googleScholar} target="_blank" rel="noopener noreferrer" className="hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors">
             <GoogleScholarIcon className="w-5 h-5" />
         </a>
       </div>
-      <p className="mt-8 text-sm text-slate-500">&copy; {new Date().getFullYear()} {portfolioData.name}. All rights reserved.</p>
+      <p className="mt-8 text-sm text-slate-400 dark:text-slate-500">&copy; {new Date().getFullYear()} {portfolioData.name}. All rights reserved.</p>
     </div>
   </footer>
 );
@@ -435,17 +477,19 @@ const Footer = () => (
 
 export default function App() {
   return (
-    <div className="bg-slate-900 text-slate-300 font-sans">
-      <Header />
-      <main>
-        <Hero />
-        <About />
-        <Projects />
-        <Apps />
-        <Teaching />
-        <Publications />
-      </main>
-      <Footer />
-    </div>
+    <ThemeProvider>
+      <div className="bg-gray-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200 font-sans transition-colors duration-300">
+        <Header />
+        <main>
+          <Hero />
+          <About />
+          <Projects />
+          <Apps />
+          <Teaching />
+          <Publications />
+        </main>
+        <Footer />
+      </div>
+    </ThemeProvider>
   );
 }
