@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, createContext, useContext } from 'react';
-import { motion, useAnimation, useInView } from 'framer-motion';
-import { Linkedin, Mail, GitBranch, GraduationCap, Briefcase, Smartphone, Gamepad2, Mic2, ArrowRight } from 'lucide-react';
+import { motion, useAnimation, useInView, AnimatePresence } from 'framer-motion';
+import { Linkedin, Mail, GitBranch, GraduationCap, Briefcase, Smartphone, Gamepad2, Mic2, ArrowRight} from 'lucide-react';
 
 // --- Theme Context ---
 const ThemeContext = createContext();
@@ -42,6 +42,7 @@ const AnimatedBackground = () => {
 
     useEffect(() => {
         const canvas = canvasRef.current;
+        if (!canvas) return;
         const ctx = canvas.getContext('2d');
         let animationFrameId;
         
@@ -54,7 +55,7 @@ const AnimatedBackground = () => {
         window.addEventListener('resize', resizeCanvas);
 
         const nodes = [];
-        const nodeCount = Math.floor((canvas.width * canvas.height) / 15000);
+        const nodeCount = Math.floor((canvas.width * canvas.height) / 20000);
         
         for (let i = 0; i < nodeCount; i++) {
             nodes.push({
@@ -67,6 +68,7 @@ const AnimatedBackground = () => {
         }
 
         const draw = () => {
+            if(!ctx) return;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             
             const nodeColor = theme === 'dark' ? 'rgba(203, 213, 225, 0.8)' : 'rgba(100, 116, 139, 0.8)';
@@ -145,7 +147,7 @@ const portfolioData = {
   projects: [
     { title: "Thermal Comfort Modeling", description: "Developed a 72% accurate, building-specific thermal comfort model using interpretable machine learning (SHAP, PDPs) on data from a custom-built app.", tags: ["Machine Learning", "App Development"] },
     { title: "Building Interfaces and Satisfaction", description: "Investigated occupant satisfaction in 11 Dutch offices, finding significant correlations between autonomy, competence, and satisfaction from 366 responses.", tags: ["Statistical Analysis", "User Satisfaction"] },
-    { title: "GPLAN - Floorplanning Tool", description: "Co-developed novel graph theory and optimization algorithms to instantly generate multiple floorplans from adjacency and dimensional constraints.", tags: ["Graph Algorithms", "Optimization"] },
+    { title: "GPLAN - Floorplanning Tool", description: "Co-developed novel graph theory and optimization algorithms to instantly generate multiple floorplans from adjacency and dimensional constraints.", tags: ["Graph Theory", "Optimization"] },
     { title: "Rainwater Harvesting Network Optimisation", description: "Segmented satellite imagery using CNN and solved the Steiner Tree problem with a genetic algorithm to minimize pipeline costs.", tags: ["CNN", "Genetic Algorithms"] }
   ],
   apps: [
@@ -158,20 +160,20 @@ const portfolioData = {
     supervision: ["Master Project: Interface design for all occupants of TU/e (2024).", "Tutor and Guest Lecturer: Smart Building Methodology and Technology, TU/e (2022-24)."]
   },
   publications: [
-    { text: "Upasani, N., Guerra-Santin, O., & Mohammadi, M. (2024). Developing building-specific, occupant-centric thermal comfort models: A methodological approach.", journal: "Journal of Building Engineering, 95.", link: "https://www.sciencedirect.com/science/article/pii/S2352710224018497" },
-    { text: "Upasani, N., Shekhawat, K., & Sachdeva, G. (2020). Automated Generation of Dimensioned Rectangular Floorplans.", journal: "Automation in Construction, 113.", link: "https://doi.org/10.1016/j.autcon.2020.103149" },
-    { text: "Upasani, N., Guerra-Santin, M., Mohammadi, M., Seraj, M., & Joostens, F. (2024). Understanding thermal comfort using self-reporting and interpretable machine learning.", journal: "Energy Efficiency (revision submitted).", link: "#" },
-    { text: "Upasani, N., Guerra-Santin, O., & Mohammadi, M. (2025). A self-determination theory approach to evaluating indoor environment satisfaction through building interfaces.", journal: "In preparation.", link: "#" },
-    { text: "Upasani, N., Guerra-Santin, O., & Mohammadi, M. (2025). Towards a standardized digital platform for smart buildings: Ensuring a two-way communication.", journal: "In preparation.", link: "#" },
-    { text: "Shekhawat, K., Upasani, N., Bisht, S., & Jain, R. (2021). A tool for computer-generated dimensioned floorplans based on given adjacencies.", journal: "Automation in Construction, 127.", link: "https://doi.org/10.1016/j.autcon.2021.103718" },
-    { text: "Bisht, S., Shekhawat, K., Upasani, N., Jain, R., Tiwaskar, R., & Hebbar, C. (2022). Transforming an Adjacency Graph into Dimensioned Floorplan Layouts.", journal: "Computer Graphics Forum, 41(6).", link: "https://doi.org/10.1111/cgf.14451" },
-    { text: "Nagpal, G., Chanda, U., & Upasani, N. (2022). Inventory replenishment policies for two successive generations price-sensitive technology products.", journal: "Journal of Industrial and Management Optimization, 18(3).", link: "https://doi.org/10.3934/jimo.2021036" },
-    { text: "Rawat, S., Narula, R., Upasani, N., & Muthukumar, G. (2019). A relook on dosage of basalt chopped fibres and its influence on characteristics of concrete.", journal: "Advances in Structural Engineering and Rehabilitation.", link: "https://doi.org/10.1007/978-981-13-7615-3_22" },
-    { text: "Upasani, N., Bansal, M., Satapathy, A., Rawat, S., & Muthukumar, G. (2019). Design and Performance Criteria for Fire-Resistant Design of Structures--An Overview.", journal: "Advances in Structural Technologies.", link: "https://doi.org/10.1007/978-981-15-5235-9_21" },
-    { text: "Rawat, S., Narula, R., Kaushik, P., et al. (2024). Seismic and Fire Behaviour of FRP Strengthened Reinforced High Strength Concrete Structures-An Overview.", journal: "RC Structures Strengthened with FRP for Earthquake Resistance.", link: "https://doi.org/10.1007/978-981-97-0102-5_11" },
-    { text: "Rai, A., Upasani, N., Rawat, S., & Muthukumar, G. (2018). Methodology for numerical simulation of the behaviour of deep beams.", journal: "11th Structural Engineering Convention (SEC-2018).", link: "#" },
-    { text: "Upasani, N., & Gupta, R. (2019). Optimization of rainwater harvesting network in rural scenario using gis and ga.", journal: "5th International Conference on Soft Computing and Optimization.", link: "#" },
-    { text: "Guerra-Santin, O., Lange, V., Upasani, N., Corsius, M., & Jeurens, J. (2025). User-centric interfaces for smart and healthy buildings: Exploring a design methodology.", journal: "Smart Healthy Environments (SHE) World Conference.", link: "#" }
+    { text: "Upasani, N., Guerra-Santin, O., & Mohammadi, M. (2024). Developing building-specific, occupant-centric thermal comfort models: A methodological approach.", journal: "Journal of Building Engineering, 95.", link: "https://www.sciencedirect.com/science/article/pii/S2352710224018497", tags: ['Thermal Comfort', 'Machine Learning'] },
+    { text: "Upasani, N., Shekhawat, K., & Sachdeva, G. (2020). Automated Generation of Dimensioned Rectangular Floorplans.", journal: "Automation in Construction, 113.", link: "https://doi.org/10.1016/j.autcon.2020.103149", tags: ['Automation', 'Graph Theory', 'Architecture'] },
+    { text: "Upasani, N., Guerra-Santin, M., Mohammadi, M., Seraj, M., & Joostens, F. (2024). Understanding thermal comfort using self-reporting and interpretable machine learning.", journal: "Energy Efficiency (revision submitted).", link: "#", tags: ['Thermal Comfort', 'Machine Learning'] },
+    { text: "Upasani, N., Guerra-Santin, O., & Mohammadi, M. (2025). A self-determination theory approach to evaluating indoor environment satisfaction through building interfaces.", journal: "In preparation.", link: "#", tags: ['User Satisfaction'] },
+    { text: "Upasani, N., Guerra-Santin, O., & Mohammadi, M. (2025). Towards a standardized digital platform for smart buildings: Ensuring a two-way communication.", journal: "In preparation.", link: "#", tags: ['Smart Buildings'] },
+    { text: "Shekhawat, K., Upasani, N., Bisht, S., & Jain, R. (2021). A tool for computer-generated dimensioned floorplans based on given adjacencies.", journal: "Automation in Construction, 127.", link: "https://doi.org/10.1016/j.autcon.2021.103718", tags: ['Automation', 'Graph Theory', 'Architecture'] },
+    { text: "Bisht, S., Shekhawat, K., Upasani, N., Jain, R., Tiwaskar, R., & Hebbar, C. (2022). Transforming an Adjacency Graph into Dimensioned Floorplan Layouts.", journal: "Computer Graphics Forum, 41(6).", link: "https://doi.org/10.1111/cgf.14451", tags: ['Graph Theory', 'Architecture'] },
+    { text: "Nagpal, G., Chanda, U., & Upasani, N. (2022). Inventory replenishment policies for two successive generations price-sensitive technology products.", journal: "Journal of Industrial and Management Optimization, 18(3).", link: "https://doi.org/10.3934/jimo.2021036", tags: ['Optimization'] },
+    { text: "Rawat, S., Narula, R., Upasani, N., & Muthukumar, G. (2019). A relook on dosage of basalt chopped fibres and its influence on characteristics of concrete.", journal: "Advances in Structural Engineering and Rehabilitation.", link: "https://doi.org/10.1007/978-981-13-7615-3_22", tags: ['Civil Engineering'] },
+    { text: "Upasani, N., Bansal, M., Satapathy, A., Rawat, S., & Muthukumar, G. (2019). Design and Performance Criteria for Fire-Resistant Design of Structures--An Overview.", journal: "Advances in Structural Technologies.", link: "https://doi.org/10.1007/978-981-15-5235-9_21", tags: ['Civil Engineering', 'Structural Engineering'] },
+    { text: "Rawat, S., Narula, R., Kaushik, P., et al. (2024). Seismic and Fire Behaviour of FRP Strengthened Reinforced High Strength Concrete Structures-An Overview.", journal: "RC Structures Strengthened with FRP for Earthquake Resistance.", link: "https://doi.org/10.1007/978-981-97-0102-5_11", tags: ['Civil Engineering', 'Structural Engineering'] },
+    { text: "Rai, A., Upasani, N., Rawat, S., & Muthukumar, G. (2018). Methodology for numerical simulation of the behaviour of deep beams.", journal: "11th Structural Engineering Convention (SEC-2018).", link: "#", tags: ['Civil Engineering', 'Structural Engineering'] },
+    { text: "Upasani, N., & Gupta, R. (2019). Optimization of rainwater harvesting network in rural scenario using gis and ga.", journal: "5th International Conference on Soft Computing and Optimization.", link: "#", tags: ['Optimization', 'GIS', 'Genetic Algorithms'] },
+    { text: "Guerra-Santin, O., Lange, V., Upasani, N., Corsius, M., & Jeurens, J. (2025). User-centric interfaces for smart and healthy buildings: Exploring a design methodology.", journal: "Smart Healthy Environments (SHE) World Conference.", link: "#", tags: ['Smart Buildings', 'User Satisfaction'] }
   ]
 };
 
@@ -233,6 +235,15 @@ const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const navLinks = ["About", "Projects", "Apps", "Teaching", "Publications"];
 
+  const handleNavClick = (e, targetId) => {
+    e.preventDefault();
+    const targetElement = document.getElementById(targetId);
+    if (targetElement) {
+      targetElement.scrollIntoView({ behavior: 'smooth' });
+    }
+    setIsOpen(false);
+  };
+
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-lg border-b border-gray-200 dark:border-slate-800">
       <div className="container mx-auto px-6 py-4 flex justify-between items-center">
@@ -241,7 +252,7 @@ const Header = () => {
         </a>
         <nav className="hidden md:flex items-center space-x-8">
           {navLinks.map(link => (
-            <a key={link} href={`#${link.toLowerCase()}`} className="text-slate-600 dark:text-slate-300 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors">
+            <a key={link} href={`#${link.toLowerCase()}`} onClick={(e) => handleNavClick(e, link.toLowerCase())} className="text-slate-600 dark:text-slate-300 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors">
               {link}
             </a>
           ))}
@@ -265,7 +276,7 @@ const Header = () => {
       {isOpen && (
         <div className="md:hidden px-6 pb-4 flex flex-col space-y-4 bg-white/95 dark:bg-slate-900/95">
           {navLinks.map(link => (
-            <a key={link} href={`#${link.toLowerCase()}`} onClick={() => setIsOpen(false)} className="text-slate-600 dark:text-slate-300 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors block text-center">
+            <a key={link} href={`#${link.toLowerCase()}`} onClick={(e) => handleNavClick(e, link.toLowerCase())} className="text-slate-600 dark:text-slate-300 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors block text-center">
               {link}
             </a>
           ))}
@@ -510,34 +521,64 @@ const Teaching = () => (
   </Section>
 );
 
-const Publications = () => (
-    <Section id="publications" className="bg-white dark:bg-slate-800">
-        <div className="container mx-auto px-6">
-            <SectionTitle>Publications</SectionTitle>
-            <div className="max-w-4xl mx-auto space-y-4">
-                {portfolioData.publications.map((pub, index) => {
-                    const isClickable = pub.link && pub.link !== "#";
-                    const MotionComponent = isClickable ? motion.a : motion.div;
-                    return (
-                        <MotionComponent
-                            key={index}
-                            href={isClickable ? pub.link : undefined}
-                            target={isClickable ? "_blank" : undefined}
-                            rel={isClickable ? "noopener noreferrer" : undefined}
-                            className={`block p-4 border border-gray-200 dark:border-slate-700 rounded-lg bg-gray-50 dark:bg-slate-900 ${isClickable ? 'hover:border-cyan-300 dark:hover:border-cyan-500 hover:bg-gray-100 dark:hover:bg-slate-800' : 'cursor-default'} transition-all duration-300`}
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true, amount: 0.8 }}
-                            transition={{ duration: 0.5, delay: index * 0.05 }}
+const Publications = () => {
+    const curatedTags = ['All', 'Machine Learning', 'Graph Theory', 'Optimization','Thermal Comfort', 'Automation', 'Civil Engineering'];
+    
+    const [activeFilter, setActiveFilter] = useState('All');
+    
+    const filteredPublications = activeFilter === 'All'
+        ? portfolioData.publications
+        : portfolioData.publications.filter(p => p.tags && p.tags.includes(activeFilter));
+
+    return (
+        <Section id="publications" className="bg-white dark:bg-slate-800">
+            <div className="container mx-auto px-6">
+                <SectionTitle>Publications</SectionTitle>
+                
+                <div className="flex flex-wrap justify-center gap-2 mb-12">
+                    {curatedTags.map(tag => (
+                        <button
+                            key={tag}
+                            onClick={() => setActiveFilter(tag)}
+                            className={`px-4 py-2 text-sm font-medium rounded-full transition-colors ${
+                                activeFilter === tag 
+                                ? 'bg-cyan-600 dark:bg-cyan-400 text-white dark:text-slate-900' 
+                                : 'bg-gray-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-gray-300 dark:hover:bg-slate-600'
+                            }`}
                         >
-                            <p className="font-medium text-slate-800 dark:text-slate-200">{pub.text} <em className="text-slate-500 dark:text-slate-400 not-italic">{pub.journal}</em></p>
-                        </MotionComponent>
-                    );
-                })}
+                            {tag}
+                        </button>
+                    ))}
+                </div>
+
+                <motion.div layout className="max-w-4xl mx-auto space-y-4">
+                    <AnimatePresence>
+                        {filteredPublications.map((pub) => {
+                            const isClickable = pub.link && pub.link !== "#";
+                            const MotionComponent = isClickable ? motion.a : motion.div;
+                            return (
+                                <MotionComponent
+                                    key={pub.text}
+                                    layout
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -20 }}
+                                    transition={{ duration: 0.3 }}
+                                    href={isClickable ? pub.link : undefined}
+                                    target={isClickable ? "_blank" : undefined}
+                                    rel={isClickable ? "noopener noreferrer" : undefined}
+                                    className={`block p-4 border border-gray-200 dark:border-slate-700 rounded-lg bg-gray-50 dark:bg-slate-900 ${isClickable ? 'hover:border-cyan-300 dark:hover:border-cyan-500 hover:bg-gray-100 dark:hover:bg-slate-800' : 'cursor-default'} transition-all duration-300`}
+                                >
+                                    <p className="font-medium text-slate-800 dark:text-slate-200">{pub.text} <em className="text-slate-500 dark:text-slate-400 not-italic">{pub.journal}</em></p>
+                                </MotionComponent>
+                            );
+                        })}
+                    </AnimatePresence>
+                </motion.div>
             </div>
-        </div>
-    </Section>
-);
+        </Section>
+    );
+};
 
 const Footer = () => (
   <footer className="bg-gray-100 dark:bg-slate-800 border-t border-gray-200 dark:border-slate-700">
