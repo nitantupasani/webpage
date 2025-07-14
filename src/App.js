@@ -4,8 +4,9 @@ import { Linkedin, Mail, GitBranch, GraduationCap, Briefcase, Smartphone, Gamepa
 
 // --- Google Scholar Icon ---
 const GoogleScholarIcon = (props) => (
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" {...props}>
-    <path fill="currentColor" d="M512 256c0 113.6-84.6 207.4-194.2 222c-12.3 2.3-24.3-6.8-26.6-19.1s6.8-24.3 19.1-26.6C404.1 414.9 480.6 342.6 480.6 256c0-106-86-192-192-192s-192 86-192 192c0 31.8 7.8 62 21.7 88.4c11.9 22.8 3.3 51.2-19.5 63.1s-51.2-3.3-63.1-19.5C2.5 344.3 0 299.8 0 256C0 114.6 114.6 0 256 0S512 114.6 512 256zM153.1 312.3c3-11.2-2.3-22.9-13.5-25.9s-22.9 2.3-25.9 13.5s2.3 22.9 13.5 25.9s22.9-2.2 25.9-13.5zM224 336c0-44.2 35.8-80 80-80s80 35.8 80 80s-35.8 80-80 80s-80-35.8-80-80z"/>
+  <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="currentColor" {...props}>
+    <title>Google Scholar</title>
+    <path d="M5.242 13.769L0 9.5 12 0l12 9.5-5.242 4.269C17.548 11.249 14.978 9.5 12 9.5c-2.977 0-5.548 1.748-6.758 4.269zM12 10a7 7 0 1 0 0 14 7 7 0 0 0 0-14z"/>
   </svg>
 );
 
