@@ -256,10 +256,10 @@ const portfolioData = {
     { type: 'education', title: 'M.Sc. (Hons.) Mathematics & B.E. (Hons.) Civil Engineering', institution: 'BITS Pilani, India', period: '2015-2020' }
   ],
   projects: [
-    { title: "Thermal Comfort Modeling", description: "Developed a 72% accurate, building-specific thermal comfort model using interpretable machine learning (SHAP, PDPs) on data from a custom-built app.", tags: ["Machine Learning", "App Development"] },
-    { title: "Building Interfaces and Satisfaction", description: "Investigated occupant satisfaction in 11 Dutch offices, finding significant correlations between autonomy, competence, and satisfaction from 366 responses.", tags: ["Statistical Analysis", "User Satisfaction"] },
-    { title: "GPLAN - Floorplanning Tool", description: "Co-developed novel graph theory and optimization algorithms to instantly generate multiple floorplans from adjacency and dimensional constraints.", tags: ["Graph Theory", "Optimization"] },
-    { title: "Rainwater Harvesting Network Optimisation", description: "Segmented satellite imagery using CNN and solved the Steiner Tree problem with a genetic algorithm to minimize pipeline costs.", tags: ["CNN", "Genetic Algorithms"] }
+    { title: "Thermal Comfort Modeling", description: "Developed a 72% accurate, building-specific thermal comfort model using interpretable machine learning (SHAP, PDPs) on data from a custom-built app.", tags: ["Machine Learning", "App Development"], filterTag: "Thermal Comfort" },
+    { title: "Building Interfaces and Satisfaction", description: "Investigated occupant satisfaction in 11 Dutch offices, finding significant correlations between autonomy, competence, and satisfaction from 366 responses.", tags: ["Statistical Analysis", "User Satisfaction"], filterTag: "User Satisfaction" },
+    { title: "GPLAN - Floorplanning Tool", description: "Co-developed novel graph theory and optimization algorithms to instantly generate multiple floorplans from adjacency and dimensional constraints.", tags: ["Graph Theory", "Optimization"], filterTag: "Graph Theory" },
+    { title: "Rainwater Harvesting Network Optimisation", description: "Segmented satellite imagery using CNN and solved the Steiner Tree problem with a genetic algorithm to minimize pipeline costs.", tags: ["CNN", "Genetic Algorithms"], filterTag: "Optimization" }
   ],
   apps: [
     { icon: Smartphone, title: "Comfort App", description: "Developed for PhD research to collect real-time occupant comfort feedback via daily push notifications. Published on both major app stores.", tags: ["Mobile App"], link: "https://play.google.com/store/apps/details?id=com.comfort.comfortfeedbackapp", color: "blue" },
@@ -274,10 +274,10 @@ const portfolioData = {
     { text: "Upasani, N., Guerra-Santin, O., & Mohammadi, M. (2024). Developing building-specific, occupant-centric thermal comfort models: A methodological approach.", journal: "Journal of Building Engineering, 95.", link: "https://www.sciencedirect.com/science/article/pii/S2352710224018497", tags: ['Thermal Comfort', 'Machine Learning'] },
     { text: "Upasani, N., Shekhawat, K., & Sachdeva, G. (2020). Automated Generation of Dimensioned Rectangular Floorplans.", journal: "Automation in Construction, 113.", link: "https://doi.org/10.1016/j.autcon.2020.103149", tags: ['Automation', 'Graph Theory', 'Architecture'] },
     { text: "Upasani, N., Guerra-Santin, M., Mohammadi, M., Seraj, M., & Joostens, F. (2024). Understanding thermal comfort using self-reporting and interpretable machine learning.", journal: "Energy Efficiency (revision submitted).", link: "#", tags: ['Thermal Comfort', 'Machine Learning'] },
-    { text: "Upasani, N., Guerra-Santin, O., & Mohammadi, M. (2025). A self-determination theory approach to evaluating indoor environment satisfaction through building interfaces.", journal: "In preparation.", link: "#", tags: ['Thermal Comfort','User Satisfaction'] },
+    { text: "Upasani, N., Guerra-Santin, O., & Mohammadi, M. (2025). A self-determination theory approach to evaluating indoor environment satisfaction through building interfaces.", journal: "In preparation.", link: "#", tags: ['User Satisfaction'] },
     { text: "Upasani, N., Guerra-Santin, O., & Mohammadi, M. (2025). Towards a standardized digital platform for smart buildings: Ensuring a two-way communication.", journal: "In preparation.", link: "#", tags: ['Smart Buildings'] },
     { text: "Shekhawat, K., Upasani, N., Bisht, S., & Jain, R. (2021). A tool for computer-generated dimensioned floorplans based on given adjacencies.", journal: "Automation in Construction, 127.", link: "https://doi.org/10.1016/j.autcon.2021.103718", tags: ['Automation', 'Graph Theory', 'Architecture'] },
-    { text: "Bisht, S., Shekhawat, K., Upasani, N., Jain, R., Tiwaskar, R., & Hebbar, C. (2022). Transforming an Adjacency Graph into Dimensioned Floorplan Layouts.", journal: "Computer Graphics Forum, 41(6).", link: "https://doi.org/10.1111/cgf.14451", tags: ['Automation','Graph Theory', 'Architecture'] },
+    { text: "Bisht, S., Shekhawat, K., Upasani, N., Jain, R., Tiwaskar, R., & Hebbar, C. (2022). Transforming an Adjacency Graph into Dimensioned Floorplan Layouts.", journal: "Computer Graphics Forum, 41(6).", link: "https://doi.org/10.1111/cgf.14451", tags: ['Graph Theory', 'Architecture'] },
     { text: "Nagpal, G., Chanda, U., & Upasani, N. (2022). Inventory replenishment policies for two successive generations price-sensitive technology products.", journal: "Journal of Industrial and Management Optimization, 18(3).", link: "https://doi.org/10.3934/jimo.2021036", tags: ['Optimization'] },
     { text: "Rawat, S., Narula, R., Upasani, N., & Muthukumar, G. (2019). A relook on dosage of basalt chopped fibres and its influence on characteristics of concrete.", journal: "Advances in Structural Engineering and Rehabilitation.", link: "https://doi.org/10.1007/978-981-13-7615-3_22", tags: ['Civil Engineering'] },
     { text: "Upasani, N., Bansal, M., Satapathy, A., Rawat, S., & Muthukumar, G. (2019). Design and Performance Criteria for Fire-Resistant Design of Structures--An Overview.", journal: "Advances in Structural Technologies.", link: "https://doi.org/10.1007/978-981-15-5235-9_21", tags: ['Civil Engineering', 'Structural Engineering'] },
@@ -520,28 +520,40 @@ const About = () => {
   );
 };
 
-const Projects = () => (
-  <Section id="projects" className="bg-gray-50 dark:bg-slate-900">
-    <div className="container mx-auto px-6">
-      <SectionTitle>Research Projects</SectionTitle>
-      <div className="grid md:grid-cols-2 gap-8">
-        {portfolioData.projects.map((project, index) => (
-          <TiltCard key={index}>
-            <div className="bg-white dark:bg-slate-800 rounded-lg p-6 border border-gray-200 dark:border-slate-700 h-full">
-              <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">{project.title}</h3>
-              <p className="text-slate-600 dark:text-slate-300 mb-4">{project.description}</p>
-              <div className="flex flex-wrap gap-2">
-                {project.tags.map(tag => (
-                  <span key={tag} className="bg-cyan-100/60 text-cyan-800 dark:bg-cyan-900/30 dark:text-cyan-300 text-xs font-mono px-3 py-1 rounded-full">{tag}</span>
-                ))}
-              </div>
+const Projects = ({ setActiveFilter }) => {
+  const handleProjectClick = (tag) => {
+    setActiveFilter(tag);
+    const publicationsSection = document.getElementById('publications');
+    if (publicationsSection) {
+      publicationsSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  return (
+    <Section id="projects" className="bg-gray-50 dark:bg-slate-900">
+      <div className="container mx-auto px-6">
+        <SectionTitle>Research Projects</SectionTitle>
+        <div className="grid md:grid-cols-2 gap-8">
+          {portfolioData.projects.map((project, index) => (
+            <div key={index} onClick={() => handleProjectClick(project.filterTag)} className="cursor-pointer">
+              <TiltCard>
+                <div className="bg-white dark:bg-slate-800 rounded-lg p-6 border border-gray-200 dark:border-slate-700 h-full">
+                  <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">{project.title}</h3>
+                  <p className="text-slate-600 dark:text-slate-300 mb-4">{project.description}</p>
+                  <div className="flex flex-wrap gap-2">
+                    {project.tags.map(tag => (
+                      <span key={tag} className="bg-cyan-100/60 text-cyan-800 dark:bg-cyan-900/30 dark:text-cyan-300 text-xs font-mono px-3 py-1 rounded-full">{tag}</span>
+                    ))}
+                  </div>
+                </div>
+              </TiltCard>
             </div>
-          </TiltCard>
-        ))}
+          ))}
+        </div>
       </div>
-    </div>
-  </Section>
-);
+    </Section>
+  );
+};
 
 const Apps = () => (
   <Section id="apps" className="bg-white dark:bg-slate-800">
@@ -620,10 +632,8 @@ const Teaching = () => (
   </Section>
 );
 
-const Publications = () => {
-    const curatedTags = ['All', 'Machine Learning', 'Graph Theory', 'Automation', 'Civil Engineering', 'Optimization', 'Thermal Comfort'];
-    
-    const [activeFilter, setActiveFilter] = useState('All');
+const Publications = ({ activeFilter, setActiveFilter }) => {
+    const curatedTags = ['All', 'Machine Learning', 'Graph Theory', 'Automation', 'Civil Engineering', 'Optimization', 'Thermal Comfort', 'User Satisfaction', 'Smart Buildings'];
     
     const filteredPublications = activeFilter === 'All'
         ? portfolioData.publications
@@ -698,6 +708,8 @@ const Footer = () => (
 
 
 export default function App() {
+  const [activeFilter, setActiveFilter] = useState('All');
+
   return (
     <ThemeProvider>
       <CursorSpotlight />
@@ -706,10 +718,10 @@ export default function App() {
         <main>
           <Hero />
           <About />
-          <Projects />
+          <Projects setActiveFilter={setActiveFilter} />
           <Apps />
           <Teaching />
-          <Publications />
+          <Publications activeFilter={activeFilter} setActiveFilter={setActiveFilter} />
         </main>
         <Footer />
       </div>
