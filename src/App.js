@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, createContext, useContext } from 'react';
-import { motion, useAnimation, useInView, AnimatePresence } from 'framer-motion';
-import { Linkedin, Mail, GitBranch, GraduationCap, Briefcase, Smartphone, Gamepad2, Mic2, ArrowRight} from 'lucide-react';
+import { motion, useAnimation, useInView, AnimatePresence, useMotionValue, useTransform, useSpring } from 'framer-motion';
+import { Linkedin, Mail, GitBranch, GraduationCap, Briefcase, Smartphone, Gamepad2, Mic2, ArrowRight } from 'lucide-react';
 
 // --- Theme Context ---
 const ThemeContext = createContext();
@@ -35,7 +35,8 @@ const GoogleScholarIcon = (props) => (
   </svg>
 );
 
-// --- Animated Background Component ---
+// --- Animated & Interactive Components ---
+
 const AnimatedBackground = () => {
     const canvasRef = useRef(null);
     const { theme } = useTheme();
@@ -119,6 +120,116 @@ const AnimatedBackground = () => {
     return <canvas ref={canvasRef} className="absolute top-0 left-0 w-full h-full z-0" />;
 };
 
+const CursorSpotlight = () => {
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const { theme } = useTheme();
+
+  useEffect(() => {
+    const updateMousePosition = (e) => {
+      setMousePosition({ x: e.clientX, y: e.clientY });
+    };
+    window.addEventListener('mousemove', updateMousePosition);
+    return () => window.removeEventListener('mousemove', updateMousePosition);
+  }, []);
+  
+  const spotlightColor = theme === 'dark' ? 'rgba(29, 78, 216, 0.2)' : 'rgba(191, 219, 254, 0.4)';
+
+  return (
+    <div
+      className="pointer-events-none fixed inset-0 z-30 transition duration-300"
+      style={{
+        background: `radial-gradient(400px at ${mousePosition.x}px ${mousePosition.y}px, ${spotlightColor}, transparent 80%)`,
+      }}
+    />
+  );
+};
+
+const TiltCard = ({ children, className }) => {
+  const ref = useRef(null);
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+
+  const xSpring = useSpring(x, { stiffness: 300, damping: 30 });
+  const ySpring = useSpring(y, { stiffness: 300, damping: 30 });
+
+  const rotateX = useTransform(ySpring, [-0.5, 0.5], ["7.5deg", "-7.5deg"]);
+  const rotateY = useTransform(xSpring, [-0.5, 0.5], ["-7.5deg", "7.5deg"]);
+
+  const handleMouseMove = (e) => {
+    if (!ref.current) return;
+    const rect = ref.current.getBoundingClientRect();
+    const width = rect.width;
+    const height = rect.height;
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+    const xPct = mouseX / width - 0.5;
+    const yPct = mouseY / height - 0.5;
+    x.set(xPct);
+    y.set(yPct);
+  };
+
+  const handleMouseLeave = () => {
+    x.set(0);
+    y.set(0);
+  };
+
+  return (
+    <motion.div
+      ref={ref}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      style={{
+        rotateX,
+        rotateY,
+        transformStyle: "preserve-3d",
+      }}
+      className={className}
+    >
+      <div style={{ transform: "translateZ(50px)", transformStyle: "preserve-3d" }}>
+        {children}
+      </div>
+    </motion.div>
+  );
+};
+
+const ScrambleText = ({ children }) => {
+    const ref = useRef(null);
+    const isInView = useInView(ref, { once: false, amount: 0.5 });
+    const [text, setText] = useState(children);
+    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    
+    useEffect(() => {
+        if (isInView) {
+            let interval = null;
+            let iteration = 0;
+            
+            interval = setInterval(() => {
+                setText(
+                    children
+                        .split("")
+                        .map((letter, index) => {
+                            if (index < iteration) {
+                                return children[index];
+                            }
+                            return letters[Math.floor(Math.random() * 26)];
+                        })
+                        .join("")
+                );
+                
+                if (iteration >= children.length) {
+                    clearInterval(interval);
+                }
+                
+                iteration += 1;
+            }, 60);
+
+            return () => clearInterval(interval);
+        }
+    }, [isInView, children]);
+
+    return <span ref={ref}>{text}</span>;
+};
+
 
 // --- Data extracted from CV ---
 const portfolioData = {
@@ -163,10 +274,10 @@ const portfolioData = {
     { text: "Upasani, N., Guerra-Santin, O., & Mohammadi, M. (2024). Developing building-specific, occupant-centric thermal comfort models: A methodological approach.", journal: "Journal of Building Engineering, 95.", link: "https://www.sciencedirect.com/science/article/pii/S2352710224018497", tags: ['Thermal Comfort', 'Machine Learning'] },
     { text: "Upasani, N., Shekhawat, K., & Sachdeva, G. (2020). Automated Generation of Dimensioned Rectangular Floorplans.", journal: "Automation in Construction, 113.", link: "https://doi.org/10.1016/j.autcon.2020.103149", tags: ['Automation', 'Graph Theory', 'Architecture'] },
     { text: "Upasani, N., Guerra-Santin, M., Mohammadi, M., Seraj, M., & Joostens, F. (2024). Understanding thermal comfort using self-reporting and interpretable machine learning.", journal: "Energy Efficiency (revision submitted).", link: "#", tags: ['Thermal Comfort', 'Machine Learning'] },
-    { text: "Upasani, N., Guerra-Santin, O., & Mohammadi, M. (2025). A self-determination theory approach to evaluating indoor environment satisfaction through building interfaces.", journal: "In preparation.", link: "#", tags: ['User Satisfaction','Thermal Comfort'] },
+    { text: "Upasani, N., Guerra-Santin, O., & Mohammadi, M. (2025). A self-determination theory approach to evaluating indoor environment satisfaction through building interfaces.", journal: "In preparation.", link: "#", tags: ['Thermal Comfort','User Satisfaction'] },
     { text: "Upasani, N., Guerra-Santin, O., & Mohammadi, M. (2025). Towards a standardized digital platform for smart buildings: Ensuring a two-way communication.", journal: "In preparation.", link: "#", tags: ['Smart Buildings'] },
     { text: "Shekhawat, K., Upasani, N., Bisht, S., & Jain, R. (2021). A tool for computer-generated dimensioned floorplans based on given adjacencies.", journal: "Automation in Construction, 127.", link: "https://doi.org/10.1016/j.autcon.2021.103718", tags: ['Automation', 'Graph Theory', 'Architecture'] },
-    { text: "Bisht, S., Shekhawat, K., Upasani, N., Jain, R., Tiwaskar, R., & Hebbar, C. (2022). Transforming an Adjacency Graph into Dimensioned Floorplan Layouts.", journal: "Computer Graphics Forum, 41(6).", link: "https://doi.org/10.1111/cgf.14451", tags: ['Graph Theory', 'Automation'] },
+    { text: "Bisht, S., Shekhawat, K., Upasani, N., Jain, R., Tiwaskar, R., & Hebbar, C. (2022). Transforming an Adjacency Graph into Dimensioned Floorplan Layouts.", journal: "Computer Graphics Forum, 41(6).", link: "https://doi.org/10.1111/cgf.14451", tags: ['Automation','Graph Theory', 'Architecture'] },
     { text: "Nagpal, G., Chanda, U., & Upasani, N. (2022). Inventory replenishment policies for two successive generations price-sensitive technology products.", journal: "Journal of Industrial and Management Optimization, 18(3).", link: "https://doi.org/10.3934/jimo.2021036", tags: ['Optimization'] },
     { text: "Rawat, S., Narula, R., Upasani, N., & Muthukumar, G. (2019). A relook on dosage of basalt chopped fibres and its influence on characteristics of concrete.", journal: "Advances in Structural Engineering and Rehabilitation.", link: "https://doi.org/10.1007/978-981-13-7615-3_22", tags: ['Civil Engineering'] },
     { text: "Upasani, N., Bansal, M., Satapathy, A., Rawat, S., & Muthukumar, G. (2019). Design and Performance Criteria for Fire-Resistant Design of Structures--An Overview.", journal: "Advances in Structural Technologies.", link: "https://doi.org/10.1007/978-981-15-5235-9_21", tags: ['Civil Engineering', 'Structural Engineering'] },
@@ -209,7 +320,7 @@ const Section = ({ children, id, className = '' }) => {
 
 const SectionTitle = ({ children }) => (
   <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 md:mb-16 text-slate-900 dark:text-slate-100">
-    {children}
+    <ScrambleText>{children}</ScrambleText>
   </h2>
 );
 
@@ -383,15 +494,15 @@ const About = () => {
           </div>
           <div className="md:col-span-3">
             <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-6">Education & Experience</h3>
-            <ol className="relative border-l border-gray-200 dark:border-slate-700">
+            <motion.ol 
+              className="relative border-l border-gray-200 dark:border-slate-700"
+              variants={{ visible: { transition: { staggerChildren: 0.1 } } }}
+            >
               {portfolioData.timeline.map((item, index) => (
                 <motion.li 
                   key={index} 
                   className="mb-10 ml-8"
-                  initial={{ opacity: 0, x: -20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true, amount: 0.5 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  variants={{ hidden: { opacity: 0, x: -20 }, visible: { opacity: 1, x: 0 } }}
                 >
                   <span className="absolute flex items-center justify-center w-8 h-8 bg-gray-100 dark:bg-slate-800 rounded-full -left-4 ring-4 ring-white dark:ring-slate-800 text-cyan-600 dark:text-cyan-400">
                     {item.type === 'work' ? <Briefcase size={16} /> : <GraduationCap size={16} />}
@@ -401,7 +512,7 @@ const About = () => {
                   {item.description && <p className="mb-4 text-base font-normal text-slate-600 dark:text-slate-300">{item.description}</p>}
                 </motion.li>
               ))}
-            </ol>
+            </motion.ol>
           </div>
         </div>
       </div>
@@ -415,23 +526,17 @@ const Projects = () => (
       <SectionTitle>Research Projects</SectionTitle>
       <div className="grid md:grid-cols-2 gap-8">
         {portfolioData.projects.map((project, index) => (
-          <motion.div
-            key={index}
-            className="bg-white dark:bg-slate-800 rounded-lg p-6 border border-gray-200 dark:border-slate-700 hover:border-cyan-300 dark:hover:border-cyan-500 transition-colors duration-300"
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true, amount: 0.5 }}
-            transition={{ duration: 0.5, delay: index * 0.1 }}
-            whileHover={{ y: -5 }}
-          >
-            <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">{project.title}</h3>
-            <p className="text-slate-600 dark:text-slate-300 mb-4">{project.description}</p>
-            <div className="flex flex-wrap gap-2">
-              {project.tags.map(tag => (
-                <span key={tag} className="bg-cyan-100/60 text-cyan-800 dark:bg-cyan-900/30 dark:text-cyan-300 text-xs font-mono px-3 py-1 rounded-full">{tag}</span>
-              ))}
+          <TiltCard key={index}>
+            <div className="bg-white dark:bg-slate-800 rounded-lg p-6 border border-gray-200 dark:border-slate-700 h-full">
+              <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">{project.title}</h3>
+              <p className="text-slate-600 dark:text-slate-300 mb-4">{project.description}</p>
+              <div className="flex flex-wrap gap-2">
+                {project.tags.map(tag => (
+                  <span key={tag} className="bg-cyan-100/60 text-cyan-800 dark:bg-cyan-900/30 dark:text-cyan-300 text-xs font-mono px-3 py-1 rounded-full">{tag}</span>
+                ))}
+              </div>
             </div>
-          </motion.div>
+          </TiltCard>
         ))}
       </div>
     </div>
@@ -447,39 +552,33 @@ const Apps = () => (
           const Icon = app.icon;
           const isClickable = app.link && app.link !== "#";
           return (
-            <motion.div
-              key={index}
-              className="bg-gray-50 dark:bg-slate-900 rounded-lg p-6 border border-gray-200 dark:border-slate-700 hover:border-cyan-300 dark:hover:border-cyan-500 transition-colors duration-300 flex flex-col"
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.5 }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              whileHover={{ y: -5 }}
-            >
-              <div className="flex items-center mb-4">
-                <div className={`p-3 rounded-full bg-${app.color}-100 dark:bg-${app.color}-900/30 mr-4 text-${app.color}-600 dark:text-${app.color}-400`}>
-                  <Icon size={24} />
+            <TiltCard key={index}>
+              <div className="bg-gray-50 dark:bg-slate-900 rounded-lg p-6 border border-gray-200 dark:border-slate-700 flex flex-col h-full">
+                <div className="flex items-center mb-4">
+                  <div className={`p-3 rounded-full bg-${app.color}-100 dark:bg-${app.color}-900/30 mr-4 text-${app.color}-600 dark:text-${app.color}-400`}>
+                    <Icon size={24} />
+                  </div>
+                  <h3 className="text-xl font-bold text-slate-900 dark:text-white">{app.title}</h3>
                 </div>
-                <h3 className="text-xl font-bold text-slate-900 dark:text-white">{app.title}</h3>
-              </div>
-              <p className="text-slate-600 dark:text-slate-300 mb-4 flex-grow">{app.description}</p>
-              <div className="flex justify-between items-center mt-4">
-                <div className="flex flex-wrap gap-2">
-                  {app.tags.map(tag => (
-                    <span key={tag} className="bg-cyan-100/60 text-cyan-800 dark:bg-cyan-900/30 dark:text-cyan-300 text-xs font-mono px-3 py-1 rounded-full">{tag}</span>
-                  ))}
+                <p className="text-slate-600 dark:text-slate-300 mb-4 flex-grow">{app.description}</p>
+                <div className="flex justify-between items-center mt-4">
+                  <div className="flex flex-wrap gap-2">
+                    {app.tags.map(tag => (
+                      <span key={tag} className="bg-cyan-100/60 text-cyan-800 dark:bg-cyan-900/30 dark:text-cyan-300 text-xs font-mono px-3 py-1 rounded-full">{tag}</span>
+                    ))}
+                  </div>
+                  {isClickable ? (
+                    <a href={app.link} target="_blank" rel="noopener noreferrer" className={`text-${app.color}-600 dark:text-${app.color}-400 hover:text-${app.color}-800 dark:hover:text-${app.color}-300 font-semibold text-sm flex items-center`}>
+                      Details <ArrowRight size={16} className="ml-1" />
+                    </a>
+                  ) : (
+                    <span className={`text-slate-400 dark:text-slate-500 font-semibold text-sm flex items-center cursor-default`}>
+                      Details <ArrowRight size={16} className="ml-1" />
+                    </span>
+                  )}
                 </div>
-                {isClickable ? (
-                  <a href={app.link} target="_blank" rel="noopener noreferrer" className={`text-${app.color}-600 dark:text-${app.color}-400 hover:text-${app.color}-800 dark:hover:text-${app.color}-300 font-semibold text-sm flex items-center`}>
-                    Details <ArrowRight size={16} className="ml-1" />
-                  </a>
-                ) : (
-                  <span className={`text-slate-400 dark:text-slate-500 font-semibold text-sm flex items-center cursor-default`}>
-                    Details <ArrowRight size={16} className="ml-1" />
-                  </span>
-                )}
               </div>
-            </motion.div>
+            </TiltCard>
           );
         })}
       </div>
@@ -522,7 +621,7 @@ const Teaching = () => (
 );
 
 const Publications = () => {
-    const curatedTags = ['All', 'Machine Learning', 'Graph Theory', 'Optimization','Thermal Comfort', 'Automation', 'Civil Engineering'];
+    const curatedTags = ['All', 'Machine Learning', 'Graph Theory', 'Automation', 'Civil Engineering', 'Optimization', 'Thermal Comfort'];
     
     const [activeFilter, setActiveFilter] = useState('All');
     
@@ -601,6 +700,7 @@ const Footer = () => (
 export default function App() {
   return (
     <ThemeProvider>
+      <CursorSpotlight />
       <div className="bg-gray-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200 font-sans transition-colors duration-300">
         <Header />
         <main>
