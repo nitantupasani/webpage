@@ -17,7 +17,7 @@ const portfolioData = {
   title: "Researcher, Mathematician, and Innovator",
   summary: "Aspiring to make a positive contribution to society and the environment through scientific openness, inclusivity, and lifelong learning.",
   // IMPORTANT: Replace this with a direct link to your photo
-  pictureUrl: "/picture.jpg",
+  pictureUrl: "/picture.png",
   contact: {
     email: "n.a.upasani@tue.nl",
     linkedin: "https://www.linkedin.com/in/nitant-upasani-bb1a76148/",
