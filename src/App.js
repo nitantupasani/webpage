@@ -1,10 +1,8 @@
 import React, { useState, useEffect, useRef, createContext, useContext } from 'react';
 import { motion, useAnimation, useInView } from 'framer-motion';
-import { Linkedin, Mail, GitBranch, GraduationCap, Briefcase, Smartphone, Gamepad2, Mic2, ArrowRight, Sun, Moon } from 'lucide-react';
+import { Linkedin, Mail, GitBranch, GraduationCap, Briefcase, Smartphone, Gamepad2, Mic2, ArrowRight } from 'lucide-react';
 
 // --- Theme Context ---
-// This sets up the ability to toggle between light and dark themes.
-// Make sure your tailwind.config.js has `darkMode: 'class'`.
 const ThemeContext = createContext();
 
 const ThemeProvider = ({ children }) => {
@@ -36,6 +34,88 @@ const GoogleScholarIcon = (props) => (
     <path d="M5.242 13.769L0 9.5 12 0l12 9.5-5.242 4.269C17.548 11.249 14.978 9.5 12 9.5c-2.977 0-5.548 1.748-6.758 4.269zM12 10a7 7 0 1 0 0 14 7 7 0 0 0 0-14z"/>
   </svg>
 );
+
+// --- Animated Background Component ---
+const AnimatedBackground = () => {
+    const canvasRef = useRef(null);
+    const { theme } = useTheme();
+
+    useEffect(() => {
+        const canvas = canvasRef.current;
+        const ctx = canvas.getContext('2d');
+        let animationFrameId;
+        
+        const resizeCanvas = () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        };
+        
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        const nodes = [];
+        const nodeCount = Math.floor((canvas.width * canvas.height) / 15000);
+        
+        for (let i = 0; i < nodeCount; i++) {
+            nodes.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                vx: (Math.random() - 0.5) * 0.5,
+                vy: (Math.random() - 0.5) * 0.5,
+                radius: Math.random() * 1.5 + 1,
+            });
+        }
+
+        const draw = () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            const nodeColor = theme === 'dark' ? 'rgba(203, 213, 225, 0.8)' : 'rgba(100, 116, 139, 0.8)';
+            const lineColor = theme === 'dark' ? 'rgba(100, 116, 139, 0.3)' : 'rgba(156, 163, 175, 0.3)';
+
+            nodes.forEach(node => {
+                node.x += node.vx;
+                node.y += node.vy;
+
+                if (node.x < 0 || node.x > canvas.width) node.vx *= -1;
+                if (node.y < 0 || node.y > canvas.height) node.vy *= -1;
+
+                ctx.beginPath();
+                ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
+                ctx.fillStyle = nodeColor;
+                ctx.fill();
+            });
+
+            for (let i = 0; i < nodes.length; i++) {
+                for (let j = i + 1; j < nodes.length; j++) {
+                    const dx = nodes[i].x - nodes[j].x;
+                    const dy = nodes[i].y - nodes[j].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < 120) {
+                        ctx.beginPath();
+                        ctx.moveTo(nodes[i].x, nodes[i].y);
+                        ctx.lineTo(nodes[j].x, nodes[j].y);
+                        ctx.strokeStyle = lineColor;
+                        ctx.lineWidth = 1 - distance / 120;
+                        ctx.stroke();
+                    }
+                }
+            }
+
+            animationFrameId = requestAnimationFrame(draw);
+        };
+
+        draw();
+
+        return () => {
+            cancelAnimationFrame(animationFrameId);
+            window.removeEventListener('resize', resizeCanvas);
+        };
+
+    }, [theme]);
+
+    return <canvas ref={canvasRef} className="absolute top-0 left-0 w-full h-full z-0" />;
+};
 
 
 // --- Data extracted from CV ---
@@ -135,13 +215,17 @@ const SectionTitle = ({ children }) => (
 
 const ThemeToggleButton = () => {
   const { theme, toggleTheme } = useTheme();
+
   return (
-    <button
-      onClick={toggleTheme}
-      className="p-2 rounded-full text-slate-500 dark:text-slate-400 hover:bg-gray-200 dark:hover:bg-slate-700 transition-colors"
-    >
-      {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
-    </button>
+    <div className="flex items-center">
+      <label htmlFor="theme-toggle" className="relative inline-flex items-center cursor-pointer">
+        <input type="checkbox" id="theme-toggle" className="sr-only peer" checked={theme === 'dark'} onChange={toggleTheme} />
+        <div className="w-11 h-6 bg-gray-200 rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-cyan-600"></div>
+        <span className="ml-3 text-sm font-medium text-slate-600 dark:text-slate-300">
+          {theme === 'dark' ? 'Dark Mode' : 'Light Mode'}
+        </span>
+      </label>
+    </div>
   );
 };
 
@@ -196,10 +280,8 @@ const Header = () => {
 
 const Hero = () => {
   return (
-    <section id="home" className="min-h-screen flex items-center justify-center relative overflow-hidden">
-      <div className="absolute inset-0 bg-gray-50 dark:bg-slate-900 z-0">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.15),rgba(255,255,255,0))] dark:bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.3),rgba(255,255,255,0))]"></div>
-      </div>
+    <section id="home" className="min-h-screen flex items-center justify-center relative overflow-hidden bg-gray-50 dark:bg-slate-900">
+      <AnimatedBackground />
       <div className="container mx-auto px-6 z-10">
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <div className="text-center md:text-left">
