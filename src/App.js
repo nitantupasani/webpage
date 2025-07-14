@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-// import './index.css';
 import { motion, useAnimation, useInView } from 'framer-motion';
 import { Linkedin, Mail, GitBranch, GraduationCap, Briefcase, Smartphone, Gamepad2, Mic2, ArrowRight } from 'lucide-react';
 
@@ -41,8 +40,8 @@ const portfolioData = {
     { title: "Rainwater Harvesting Network Optimisation", description: "Segmented satellite imagery using CNN and solved the Steiner Tree problem with a genetic algorithm to minimize pipeline costs.", tags: ["CNN", "Genetic Algorithms"] }
   ],
   apps: [
-    { icon: Smartphone, title: "Comfort App", description: "Developed for PhD research to collect real-time occupant comfort feedback via daily push notifications. Published on both major app stores.", tags: ["Flutter"], link: "https://play.google.com/store/apps/details?id=com.comfort.comfortfeedbackapp", color: "blue" },
-    { icon: Gamepad2, title: "GPLAN Game", description: "Co-developed an educational game where users generate valid floorplans by interpreting room adjacency graphs, guided by Prof. Shekhawat.", tags: ["Flutter"], link: "#", color: "green" },
+    { icon: Smartphone, title: "Comfort App", description: "Developed for PhD research to collect real-time occupant comfort feedback via daily push notifications. Published on both major app stores.", tags: ["Mobile App"], link: "https://play.google.com/store/apps/details?id=com.comfort.comfortfeedbackapp", color: "blue" },
+    { icon: Gamepad2, title: "GPLAN Game", description: "Co-developed an educational game where users generate valid floorplans by interpreting room adjacency graphs, guided by Prof. Shekhawat.", tags: ["Game Development"], link: "#", color: "green" },
     { icon: Mic2, title: "SHE Visualizer", description: "A voice-to-image web app using OpenAI APIs to transcribe voice, generate AI visuals, and email responses instantly to users at SHE 2024.", tags: ["WordPress", "OpenAI API"], link: "#", color: "purple" }
   ],
   teaching: {
@@ -362,21 +361,25 @@ const Publications = () => (
         <div className="container mx-auto px-6">
             <SectionTitle>Publications</SectionTitle>
             <div className="max-w-4xl mx-auto space-y-4">
-                {portfolioData.publications.map((pub, index) => (
-                    <motion.a 
-                        key={index} 
-                        href={pub.link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="block p-4 border border-slate-700 rounded-lg bg-slate-900/50 hover:border-cyan-400/50 hover:bg-slate-800/60 transition-all duration-300"
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true, amount: 0.8 }}
-                        transition={{ duration: 0.5, delay: index * 0.05 }}
-                    >
-                        <p className="font-medium text-slate-200">{pub.text} <em className="text-slate-400 not-italic">{pub.journal}</em></p>
-                    </motion.a>
-                ))}
+                {portfolioData.publications.map((pub, index) => {
+                    const isClickable = pub.link && pub.link !== "#";
+                    const MotionComponent = isClickable ? motion.a : motion.div;
+                    return (
+                        <MotionComponent
+                            key={index}
+                            href={isClickable ? pub.link : undefined}
+                            target={isClickable ? "_blank" : undefined}
+                            rel={isClickable ? "noopener noreferrer" : undefined}
+                            className={`block p-4 border border-slate-700 rounded-lg bg-slate-900/50 ${isClickable ? 'hover:border-cyan-400/50 hover:bg-slate-800/60' : 'cursor-default'} transition-all duration-300`}
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true, amount: 0.8 }}
+                            transition={{ duration: 0.5, delay: index * 0.05 }}
+                        >
+                            <p className="font-medium text-slate-200">{pub.text} <em className="text-slate-400 not-italic">{pub.journal}</em></p>
+                        </MotionComponent>
+                    );
+                })}
             </div>
         </div>
     </Section>
