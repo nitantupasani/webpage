@@ -265,7 +265,7 @@ const portfolioData = {
     { icon: Smartphone, title: "Comfort App", description: "Developed for PhD research to collect real-time occupant comfort feedback via daily push notifications. Published on both major app stores.", tags: ["Mobile App"], link: "https://apps.apple.com/nl/app/b4b-building-28-delft/id6444261538?l=en-GB", color: "blue" },
     { icon: Gamepad2, title: "GPLAN Game", description: "Co-developed an educational game where users generate valid floorplans by interpreting room adjacency graphs, guided by Prof. Shekhawat.", tags: ["Game Development"], link: "https://apps.apple.com/nl/app/gplan-game/id6727013926?l=en-GB", color: "green" },
     { icon: Mic2, title: "SHE Visualizer", description: "A voice-to-image web app using OpenAI APIs to transcribe voice, generate AI visuals, and email responses instantly to users at SHE 2024.", tags: ["WordPress", "OpenAI API"], link: "https://www.she2024.com/she-designer-page/", color: "purple" },
-    { icon: Shield, title: "P3Venti", description: "A decision-support tool for long-term care centers to manage pandemic risks like ventilation, balancing infection risk with resident health.", tags: ["Web App", "Decision Support"], link: "#", color: "red", status: "In Progress" }
+    { icon: Shield, title: "P3Venti", description: "A decision-support tool for long-term care centers to manage pandemic risks like ventilation, balancing infection risk with resident health.", tags: ["Web App", "Decision Support"], link: "https://p3venti.netlify.app/", color: "red", status: "In Progress" }
   ],
   teaching: {
     workshops: ["Graph-Theoretic algorithms for Building Architectural Floorplans (CAADRIA 2020).", "MATLAB for optimization, neural networks, and structural dynamics (BITS Pilani, 2019)."],
@@ -603,7 +603,60 @@ const Apps = () => {
     <Section id="apps" className="bg-white dark:bg-slate-800">
       <div className="container mx-auto px-6">
         <SectionTitle>Applications Developed</SectionTitle>
-        <div className="relative group">
+        <div className="md:hidden grid grid-cols-1 gap-8">
+          {portfolioData.apps.map((app, index) => {
+              const Icon = app.icon;
+              const isClickable = app.link && app.link !== "#";
+              
+              const cardContent = (
+                <div className="relative bg-gray-50 dark:bg-slate-900 rounded-lg p-6 border border-gray-200 dark:border-slate-700 flex flex-col h-full overflow-hidden">
+                  {app.status === "In Progress" && (
+                    <div className="absolute top-2 right-2 z-10">
+                      <div className="flex items-center bg-amber-100 dark:bg-amber-900/50 text-amber-800 dark:text-amber-300 text-xs font-bold px-3 py-1 rounded-full shadow-md">
+                        <Wrench size={12} className="mr-1.5" />
+                        {app.status}
+                      </div>
+                    </div>
+                  )}
+                  <div className="flex items-center mb-4">
+                    <div className={`p-3 rounded-full bg-${app.color}-100 dark:bg-${app.color}-900/30 mr-4 text-${app.color}-600 dark:text-${app.color}-400`}>
+                      <Icon size={24} />
+                    </div>
+                    <h3 className="text-xl font-bold text-slate-900 dark:text-white">{app.title}</h3>
+                  </div>
+                  <p className="text-slate-600 dark:text-slate-300 mb-4 flex-grow">{app.description}</p>
+                  <div className="flex justify-between items-center mt-4">
+                    <div className="flex flex-wrap gap-2">
+                      {app.tags.map(tag => (
+                        <span key={tag} className="bg-cyan-100/60 text-cyan-800 dark:bg-cyan-900/30 dark:text-cyan-300 text-xs font-mono px-3 py-1 rounded-full">{tag}</span>
+                      ))}
+                    </div>
+                    <ArrowRight className={`text-slate-400 dark:text-slate-500 transition-opacity ${isClickable ? 'opacity-100' : 'opacity-0'}`} size={20} />
+                  </div>
+                </div>
+              );
+
+              if (isClickable) {
+                return (
+                  <a key={index} href={app.link} target="_blank" rel="noopener noreferrer" className="block h-full">
+                    <TiltCard>
+                      {cardContent}
+                    </TiltCard>
+                  </a>
+                );
+              }
+
+              return (
+                <div key={index} className="h-full">
+                  <TiltCard>
+                    {cardContent}
+                  </TiltCard>
+                </div>
+              );
+          })}
+        </div>
+
+        <div className="hidden md:block relative group">
           <div
             className="absolute top-0 left-0 h-full w-24 bg-gradient-to-r from-white dark:from-slate-800 to-transparent pointer-events-none z-10 transition-opacity duration-300"
             style={{ opacity: showLeftArrow ? 1 : 0 }}
@@ -662,7 +715,7 @@ const Apps = () => {
 
               if (isClickable) {
                 return (
-                  <a key={index} href={app.link} target="_blank" rel="noopener noreferrer" className="block h-full min-w-[350px] md:min-w-0 md:w-1/3 flex-shrink-0">
+                  <a key={index} href={app.link} target="_blank" rel="noopener noreferrer" className="block h-full min-w-[350px] flex-shrink-0">
                     <TiltCard>
                       {cardContent}
                     </TiltCard>
@@ -671,7 +724,7 @@ const Apps = () => {
               }
 
               return (
-                <div key={index} className="h-full min-w-[350px] md:min-w-0 md:w-1/3 flex-shrink-0">
+                <div key={index} className="h-full min-w-[350px] flex-shrink-0">
                   <TiltCard>
                     {cardContent}
                   </TiltCard>
