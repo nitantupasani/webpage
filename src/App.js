@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, createContext, useContext } from 'react';
 import { motion, useAnimation, useInView, AnimatePresence, useMotionValue, useTransform, useSpring } from 'framer-motion';
-import { Linkedin, Mail, GitBranch, GraduationCap, Briefcase, Smartphone, Gamepad2, Mic2, ArrowRight, Shield, Wrench, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Linkedin, Mail, GitBranch, GraduationCap, Briefcase, Smartphone, Gamepad2, Mic2, ArrowRight, Sun, Moon, Shield, Wrench, ChevronLeft, ChevronRight } from 'lucide-react';
 
 // --- Theme Context ---
 const ThemeContext = createContext();
@@ -72,8 +72,8 @@ const AnimatedBackground = () => {
             if(!ctx) return;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             
-            const nodeColor = theme === 'dark' ? 'rgba(203, 213, 225, 0.8)' : 'rgba(100, 116, 139, 0.8)';
-            const lineColor = theme === 'dark' ? 'rgba(100, 116, 139, 0.3)' : 'rgba(156, 163, 175, 0.3)';
+            const nodeColor = theme === 'dark' ? 'rgba(203, 213, 225, 0.7)' : 'rgba(100, 116, 139, 0.7)';
+            const lineColor = theme === 'dark' ? 'rgba(100, 116, 139, 0.2)' : 'rgba(156, 163, 175, 0.2)';
 
             nodes.forEach(node => {
                 node.x += node.vx;
@@ -262,10 +262,10 @@ const portfolioData = {
     { title: "Rainwater Harvesting Network Optimisation", description: "Segmented satellite imagery using CNN and solved the Steiner Tree problem with a genetic algorithm to minimize pipeline costs.", tags: ["CNN", "Genetic Algorithms"], filterTag: "Optimization" }
   ],
   apps: [
-    { icon: Smartphone, title: "Comfort App", description: "Developed for PhD research to collect real-time occupant comfort feedback via daily push notifications. Published on both major app stores.", tags: ["Mobile App"], link: "https://play.google.com/store/apps/details?id=com.comfort.comfortfeedbackapp", color: "blue" },
+    { icon: Smartphone, title: "Comfort App", description: "Developed for PhD research to collect real-time occupant comfort feedback via daily push notifications. Published on both major app stores.", tags: ["Mobile App"], link: "https://apps.apple.com/nl/app/b4b-building-28-delft/id6444261538?l=en-GB", color: "blue" },
     { icon: Gamepad2, title: "GPLAN Game", description: "Co-developed an educational game where users generate valid floorplans by interpreting room adjacency graphs, guided by Prof. Shekhawat.", tags: ["Game Development"], link: "https://apps.apple.com/nl/app/gplan-game/id6727013926?l=en-GB", color: "green" },
     { icon: Mic2, title: "SHE Visualizer", description: "A voice-to-image web app using OpenAI APIs to transcribe voice, generate AI visuals, and email responses instantly to users at SHE 2024.", tags: ["WordPress", "OpenAI API"], link: "https://www.she2024.com/she-designer-page/", color: "purple" },
-    { icon: Shield, title: "P3Venti", description: "A decision-support tool for long-term care centers to manage pandemic risks like ventilation, balancing infection risk with resident health.", tags: ["Web App", "Decision Support"], link: "https://p3venti.netlify.app/", color: "red", status: "In Progress" }
+    { icon: Shield, title: "P3Venti", description: "A decision-support tool for long-term care centers to manage pandemic risks like ventilation, balancing infection risk with resident health.", tags: ["Web App", "Decision Support"], link: "#", color: "red", status: "In Progress" }
   ],
   teaching: {
     workshops: ["Graph-Theoretic algorithms for Building Architectural Floorplans (CAADRIA 2020).", "MATLAB for optimization, neural networks, and structural dynamics (BITS Pilani, 2019)."],
@@ -331,14 +331,22 @@ const ThemeToggleButton = () => {
   const { theme, toggleTheme } = useTheme();
 
   return (
-    <div className="flex items-center">
-      <label htmlFor="theme-toggle" className="relative inline-flex items-center cursor-pointer">
-        <input type="checkbox" id="theme-toggle" className="sr-only peer" checked={theme === 'dark'} onChange={toggleTheme} />
-        <div className="w-11 h-6 bg-gray-200 rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-cyan-600"></div>
-        <span className="ml-3 text-sm font-medium text-slate-600 dark:text-slate-300">
-          {theme === 'dark' ? 'Dark Mode' : 'Light Mode'}
-        </span>
-      </label>
+    <div
+      onClick={toggleTheme}
+      className="w-16 h-8 flex items-center bg-gray-200 dark:bg-slate-700 rounded-full p-1 cursor-pointer"
+    >
+      <motion.div
+        layout
+        transition={{ type: "spring", stiffness: 700, damping: 30 }}
+        className="w-6 h-6 bg-white rounded-full shadow-md flex items-center justify-center"
+        style={{
+          marginLeft: theme === 'dark' ? 'auto' : '0',
+        }}
+      >
+        {theme === 'dark' ? 
+          <Moon size={14} className="text-slate-500" /> : 
+          <Sun size={14} className="text-amber-500" />}
+      </motion.div>
     </div>
   );
 };
@@ -596,7 +604,30 @@ const Apps = () => {
       <div className="container mx-auto px-6">
         <SectionTitle>Applications Developed</SectionTitle>
         <div className="relative group">
-          <div ref={scrollRef} className="flex space-x-8 pb-4 -mx-6 px-6 overflow-x-auto" style={{ scrollbarWidth: 'none', 'msOverflowStyle': 'none' }}>
+          <div
+            className="absolute top-0 left-0 h-full w-24 bg-gradient-to-r from-white dark:from-slate-800 to-transparent pointer-events-none z-10 transition-opacity duration-300"
+            style={{ opacity: showLeftArrow ? 1 : 0 }}
+          />
+          <div
+            className="absolute top-0 right-0 h-full w-24 bg-gradient-to-l from-white dark:from-slate-800 to-transparent pointer-events-none z-10 transition-opacity duration-300"
+            style={{ opacity: showRightArrow ? 1 : 0 }}
+          />
+          <AnimatePresence>
+            {showLeftArrow && (
+              <motion.button
+                initial={{ opacity: 0, scale: 0.5 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.5 }}
+                whileHover={{ scale: 1.1, backgroundColor: 'rgba(229, 231, 235, 0.9)', color: 'rgb(15, 23, 42)' }}
+                whileTap={{ scale: 0.9 }}
+                onClick={() => scroll('left')}
+                className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-5 z-20 bg-white/70 dark:bg-slate-900/70 backdrop-blur-sm rounded-full p-2 shadow-lg"
+              >
+                <ChevronLeft size={48} className="text-slate-700 dark:text-slate-200" />
+              </motion.button>
+            )}
+          </AnimatePresence>
+          <div ref={scrollRef} className="flex space-x-8 pb-4 -mx-6 px-6 overflow-x-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
             {portfolioData.apps.map((app, index) => {
               const Icon = app.icon;
               const isClickable = app.link && app.link !== "#";
@@ -649,21 +680,6 @@ const Apps = () => {
             })}
           </div>
           <AnimatePresence>
-            {showLeftArrow && (
-              <motion.button
-                initial={{ opacity: 0, scale: 0.5 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.5 }}
-                whileHover={{ scale: 1.1, backgroundColor: 'rgba(255, 255, 255, 0.8)' }}
-                whileTap={{ scale: 0.9 }}
-                onClick={() => scroll('left')}
-                className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-20 bg-white/70 dark:bg-slate-900/70 backdrop-blur-sm rounded-full p-2 shadow-lg"
-              >
-                <ChevronLeft size={40} className="text-slate-700 dark:text-slate-200" />
-              </motion.button>
-            )}
-          </AnimatePresence>
-          <AnimatePresence>
             {showRightArrow && (
               <motion.button
                 initial={{ opacity: 0, scale: 0.5 }}
@@ -674,7 +690,7 @@ const Apps = () => {
                 onClick={() => scroll('right')}
                 className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-20 bg-white/70 dark:bg-slate-900/70 backdrop-blur-sm rounded-full p-2 shadow-lg"
               >
-                <ChevronRight size={40} className="text-slate-700 dark:text-slate-200" />
+                <ChevronRight size={48} className="text-slate-700 dark:text-slate-200" />
               </motion.button>
             )}
           </AnimatePresence>
