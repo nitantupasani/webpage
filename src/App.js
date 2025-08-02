@@ -244,9 +244,9 @@ const Projects = ({ setActiveFilter }) => {
     <Section id="projects" className="bg-gray-50 dark:bg-slate-900">
       <div className="container mx-auto">
         <SectionTitle>Research Projects</SectionTitle>
-        <Marquee speed={10}>
+        <Marquee speed={ 10}>
           {portfolioData.projects.map((project, index) => (
-            <div key={index} className="w-[350px] mx-4 flex-shrink-0 cursor-pointer" onClick={() => handleProjectClick(project.filterTag)}>
+            <div key={index} className="w-[80vw] md:w-[350px] mx-4 flex-shrink-0 cursor-pointer" onClick={() => handleProjectClick(project.filterTag)}>
               <TiltCard className="h-full">
                 <div className="h-full flex flex-col bg-white dark:bg-slate-800 rounded-lg p-6 border border-gray-200 dark:border-slate-700">
                   <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">{project.title}</h3>
@@ -263,6 +263,7 @@ const Projects = ({ setActiveFilter }) => {
     </Section>
   );
 };
+
 const Apps = () => {
   return (
     <Section id="apps" className="bg-white dark:bg-slate-800">
@@ -282,7 +283,7 @@ const Apps = () => {
             );
             const Wrapper = ({ children }) => isClickable ? <a href={app.link} target="_blank" rel="noopener noreferrer" className="block h-full">{children}</a> : <>{children}</>;
             return (
-              <div key={index} className="w-[350px] mx-4 flex-shrink-0">
+              <div key={index} className="w-[80vw] md:w-[350px] mx-4 flex-shrink-0">
                 <TiltCard className="h-full">
                   <Wrapper>{CardContent}</Wrapper>
                 </TiltCard>
