@@ -134,28 +134,54 @@ const ScrambleText = ({ children }) => {
   }, [isInView, children]);
   return <span ref={ref}>{text}</span>;
 };
-const Marquee = ({ children, speed = 10 }) => {
+const Marquee = ({ children, baseVelocity = 100 }) => {
+  const marqueeRef = useRef(null);
+  const [width, setWidth] = useState(0);
   const controls = useAnimationControls();
-  
-  const transition = useMemo(() => ({
-    ease: "linear",
-    duration: speed,
-    repeat: Infinity,
-  }), [speed]);
+
+  const animation = useMemo(() => {
+    if (width > 0) {
+      const duration = width / baseVelocity;
+      return {
+        x: -width,
+        transition: { ease: "linear", duration, repeat: Infinity },
+      };
+    }
+    return {};
+  }, [width, baseVelocity]);
 
   useEffect(() => {
-    controls.start({ x: "-100%", transition });
-  }, [controls, transition]);
+    const calcWidth = () => {
+      if (marqueeRef.current) {
+        setWidth(marqueeRef.current.scrollWidth);
+      }
+    };
+    calcWidth();
+
+    const resizeObserver = new ResizeObserver(calcWidth);
+    if (marqueeRef.current) {
+      resizeObserver.observe(marqueeRef.current);
+    }
+    return () => resizeObserver.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (width > 0) {
+      controls.set({ x: 0 });
+      controls.start(animation);
+    }
+  }, [width, controls, animation]);
 
   return (
-    <div className="overflow-hidden w-full" onMouseEnter={() => controls.stop()} onMouseLeave={() => controls.start({ x: "-100%", transition })}>
+    <div className="overflow-hidden w-full" onMouseEnter={() => controls.stop()} onMouseLeave={() => controls.start(animation)}>
       <motion.div className="flex" animate={controls}>
-        <div className="flex flex-shrink-0">{children}</div>
+        <div ref={marqueeRef} className="flex flex-shrink-0">{children}</div>
         <div className="flex flex-shrink-0" aria-hidden="true">{children}</div>
       </motion.div>
     </div>
   );
 };
+
 
 // --- Reusable Components ---
 const Section = ({ children, id, className = '' }) => {
@@ -244,9 +270,9 @@ const Projects = ({ setActiveFilter }) => {
     <Section id="projects" className="bg-gray-50 dark:bg-slate-900">
       <div className="container mx-auto">
         <SectionTitle>Research Projects</SectionTitle>
-        <Marquee speed={ 10}>
+        <Marquee baseVelocity={100}>
           {portfolioData.projects.map((project, index) => (
-            <div key={index} className="w-[80vw] md:w-[350px] mx-4 flex-shrink-0 cursor-pointer" onClick={() => handleProjectClick(project.filterTag)}>
+            <div key={index} className="w-[90vw] max-w-[400px] md:w-[350px] mx-4 flex-shrink-0 cursor-pointer" onClick={() => handleProjectClick(project.filterTag)}>
               <TiltCard className="h-full">
                 <div className="h-full flex flex-col bg-white dark:bg-slate-800 rounded-lg p-6 border border-gray-200 dark:border-slate-700">
                   <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">{project.title}</h3>
@@ -263,13 +289,12 @@ const Projects = ({ setActiveFilter }) => {
     </Section>
   );
 };
-
 const Apps = () => {
   return (
     <Section id="apps" className="bg-white dark:bg-slate-800">
       <div className="container mx-auto">
         <SectionTitle>Applications Developed</SectionTitle>
-        <Marquee speed={10}>
+        <Marquee baseVelocity={100}>
           {portfolioData.apps.map((app, index) => {
             const Icon = app.icon;
             const isClickable = app.link && app.link !== "#";
@@ -283,7 +308,7 @@ const Apps = () => {
             );
             const Wrapper = ({ children }) => isClickable ? <a href={app.link} target="_blank" rel="noopener noreferrer" className="block h-full">{children}</a> : <>{children}</>;
             return (
-              <div key={index} className="w-[80vw] md:w-[350px] mx-4 flex-shrink-0">
+              <div key={index} className="w-[90vw] max-w-[400px] md:w-[350px] mx-4 flex-shrink-0">
                 <TiltCard className="h-full">
                   <Wrapper>{CardContent}</Wrapper>
                 </TiltCard>
