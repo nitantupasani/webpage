@@ -111,7 +111,7 @@ const Apps = () => {
     <Section id="apps" className="bg-white dark:bg-slate-800">
       <div className="container mx-auto">
         <SectionTitle>Applications Developed</SectionTitle>
-        <Marquee speed={40}>
+        <Marquee speed={10}>
           {portfolioData.apps.map((app, index) => {
             const Icon = app.icon;
             const isClickable = app.link && app.link !== "#";
