@@ -244,7 +244,7 @@ const Projects = ({ setActiveFilter }) => {
     <Section id="projects" className="bg-gray-50 dark:bg-slate-900">
       <div className="container mx-auto">
         <SectionTitle>Research Projects</SectionTitle>
-        <Marquee speed={40}>
+        <Marquee speed={10}>
           {portfolioData.projects.map((project, index) => (
             <div key={index} className="w-[350px] mx-4 flex-shrink-0 cursor-pointer" onClick={() => handleProjectClick(project.filterTag)}>
               <TiltCard className="h-full">
@@ -268,7 +268,7 @@ const Apps = () => {
     <Section id="apps" className="bg-white dark:bg-slate-800">
       <div className="container mx-auto">
         <SectionTitle>Applications Developed</SectionTitle>
-        <Marquee speed={40}>
+        <Marquee speed={10}>
           {portfolioData.apps.map((app, index) => {
             const Icon = app.icon;
             const isClickable = app.link && app.link !== "#";
