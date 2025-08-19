@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, createContext, useContext, useMemo } from 'react';
+import React, { useState, useEffect, useRef, createContext, useContext} from 'react';
 import { motion, useAnimationControls, useInView, AnimatePresence, useMotionValue, useTransform, useSpring } from 'framer-motion';
 import { Linkedin, Mail, GitBranch, GraduationCap, Briefcase, Smartphone, Gamepad2, Mic2, ArrowRight, Sun, Moon, Shield, Wrench } from 'lucide-react';
 
@@ -134,54 +134,95 @@ const ScrambleText = ({ children }) => {
   }, [isInView, children]);
   return <span ref={ref}>{text}</span>;
 };
+
+/* -------- FIXED CONSTANT-SPEED MARQUEE (true pause without reset) -------- */
 const Marquee = ({ children, baseVelocity = 100 }) => {
   const marqueeRef = useRef(null);
   const [width, setWidth] = useState(0);
-  const controls = useAnimationControls();
+  const [paused, setPaused] = useState(false);
+  const pausedRef = useRef(false);
+  const pos = useMotionValue(0);
+  const xStyle = useTransform(pos, v => -v);
 
-  const animation = useMemo(() => {
-    if (width > 0) {
-      const duration = width / baseVelocity;
-      return {
-        x: -width,
-        transition: { ease: "linear", duration, repeat: Infinity },
-      };
-    }
-    return {};
-  }, [width, baseVelocity]);
+  // keep a ref in sync so RAF can read pause state without re-creating the loop
+  useEffect(() => { pausedRef.current = paused; }, [paused]);
 
+  // measure width (content length of one copy)
   useEffect(() => {
     const calcWidth = () => {
-      if (marqueeRef.current) {
-        setWidth(marqueeRef.current.scrollWidth);
-      }
+      if (marqueeRef.current) setWidth(marqueeRef.current.scrollWidth);
     };
     calcWidth();
-
-    const resizeObserver = new ResizeObserver(calcWidth);
-    if (marqueeRef.current) {
-      resizeObserver.observe(marqueeRef.current);
-    }
-    return () => resizeObserver.disconnect();
+    const ro = new ResizeObserver(calcWidth);
+    if (marqueeRef.current) ro.observe(marqueeRef.current);
+    window.addEventListener('resize', calcWidth);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener('resize', calcWidth);
+    };
   }, []);
 
+  // RAF loop: depends only on width and velocity (NOT on paused)
   useEffect(() => {
-    if (width > 0) {
-      controls.set({ x: 0 });
-      controls.start(animation);
-    }
-  }, [width, controls, animation]);
+    if (!width) return;
+    let raf = 0;
+    let last = performance.now();
 
+    const tick = (now) => {
+      const dt = (now - last) / 1000;
+      last = now;
+
+      if (!pausedRef.current) {
+        // advance at constant speed and wrap inside [0, width)
+        let next = pos.get() + baseVelocity * dt;
+        if (next >= width) next = next % width;
+        if (next < 0) next = (next % width + width) % width;
+        pos.set(next);
+      }
+      raf = requestAnimationFrame(tick);
+    };
+
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [width, baseVelocity, pos]);
+
+  // if width changes (responsive), keep current position but wrap to new width
+  useEffect(() => {
+    if (!width) return;
+    let raf = 0;
+    let last = performance.now();
+
+    const tick = (now) => {
+      const dt = (now - last) / 1000;
+      last = now;
+
+      if (!pausedRef.current) {
+        let next = pos.get() + baseVelocity * dt;
+        if (next >= width) next = next % width;
+        if (next < 0) next = (next % width + width) % width;
+        pos.set(next);
+      }
+      raf = requestAnimationFrame(tick);
+    };
+
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [width, baseVelocity]);
   return (
-    <div className="overflow-hidden w-full" onMouseEnter={() => controls.stop()} onMouseLeave={() => controls.start(animation)}>
-      <motion.div className="flex" animate={controls}>
+    <div
+      className="overflow-hidden w-full"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+    >
+      <motion.div className="flex" style={{ x: xStyle }}>
         <div ref={marqueeRef} className="flex flex-shrink-0">{children}</div>
         <div className="flex flex-shrink-0" aria-hidden="true">{children}</div>
       </motion.div>
     </div>
   );
 };
-
+// ------------------------------------------------------------------------
 
 // --- Reusable Components ---
 const Section = ({ children, id, className = '' }) => {
