@@ -205,7 +205,7 @@ const SectionTitle = ({ children }) => <h2 className="text-3xl md:text-4xl font-
 // --- Page Section Components ---
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const navLinks = ["About", "Projects", "Apps", "Teaching", "Publications"];
+  const navLinks = ["About", "Apps", "Projects", "Teaching", "Publications"];
   const handleNavClick = (e, targetId) => {
     e.preventDefault();
     document.getElementById(targetId)?.scrollIntoView({ behavior: 'smooth' });
@@ -378,7 +378,7 @@ const Publications = ({ activeFilter, setActiveFilter }) => {
     );
 };
 const Footer = () => (
-  <footer className="bg-zinc-950 border-t border-white/10"><div className="container mx-auto px-6 py-8 text-center text-zinc-500"><p className="text-lg font-semibold text-white">{portfolioData.name}</p><p className="mt-2">Let's connect and build something great together.</p><div className="mt-6 flex justify-center space-x-6"><a href={`mailto:${portfolioData.contact.email}`} className="hover:text-white transition-colors"><Mail size={22} /></a><a href={portfolioData.contact.linkedin} target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors"><Linkedin size={22} /></a><a href={portfolioData.contact.googleScholar} target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors"><GoogleScholarIcon className="w-5 h-5" /></a></div><p className="mt-8 text-sm text-zinc-600">&copy; {new Date().getFullYear()} {portfolioData.name}. All rights reserved.</p></div></footer>
+  <footer className="bg-zinc-950 border-t border-white/10"><div className="container mx-auto px-6 py-8 text-center text-zinc-500"><p className="text-lg font-semibold text-white">{portfolioData.name}</p><p className="mt-2">Let's connect and build something great together.</p><div className="mt-6 flex justify-center space-x-6"><a href={portfolioData.contact.github} target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors"><Github size={22} /></a><a href={`mailto:${portfolioData.contact.email}`} className="hover:text-white transition-colors"><Mail size={22} /></a><a href={portfolioData.contact.linkedin} target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors"><Linkedin size={22} /></a><a href={portfolioData.contact.googleScholar} target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors"><GoogleScholarIcon className="w-5 h-5" /></a></div><p className="mt-8 text-sm text-zinc-600">&copy; {new Date().getFullYear()} {portfolioData.name}. All rights reserved.</p></div></footer>
 );
 
 export default function App() {
@@ -390,8 +390,8 @@ export default function App() {
         <main>
           <Hero />
           <About />
-          <Projects setActiveFilter={setActiveFilter} />
           <Apps />
+          <Projects setActiveFilter={setActiveFilter} />
           <Teaching />
           <Publications activeFilter={activeFilter} setActiveFilter={setActiveFilter} />
         </main>
